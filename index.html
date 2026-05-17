@@ -183,10 +183,14 @@
 
         /* ========== HOME VIEW (MAP + MECHANICS) ========== */
         #homeView {
-            display: grid;
             grid-template-columns: 1fr 300px;
             gap: 0;
             height: calc(100vh - 60px);
+        }
+
+        /* CORREÇÃO: homeView usa grid (não block) quando ativo */
+        #homeView.active {
+            display: grid;
         }
 
         #map {
