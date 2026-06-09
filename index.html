@@ -46,13 +46,14 @@
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
             --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
             --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-            
-            /* Spacing */
+            --shadow-glow: 0 0 20px rgba(255, 62, 62, 0.3);
+                        /* Spacing */
             --spacing-xs: 4px;
             --spacing-sm: 8px;
             --spacing-md: 16px;
             --spacing-lg: 24px;
             --spacing-xl: 32px;
+            --spacing-2xl: 48px;
             
             /* Border Radius */
             --radius-sm: 8px;
@@ -65,10 +66,11 @@
             --font-size-xs: 0.75rem;
             --font-size-sm: 0.875rem;
             --font-size-base: 1rem;
-            --font-size-lg: 1.125rem;
-            --font-size-xl: 1.25rem;
-            --font-size-2xl: 1.5rem;
-            --font-size-3xl: 2rem;
+            --font-size-md: 1.125rem;
+            --font-size-lg: 1.25rem;
+            --font-size-xl: 1.5rem;
+            --font-size-2xl: 2rem;
+            --font-size-3xl: 2.5rem;
             
             /* Z-index */
             --z-modal: 400;
@@ -82,6 +84,10 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--color-bg-primary);
@@ -89,6 +95,25 @@
             min-height: 100vh;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        /* ========== SCROLLBAR ========== */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--color-bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--color-border-secondary);
+            border-radius: var(--radius-full);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--brand-accent);
         }
 
         /* ========== HEADER ========== */
@@ -97,39 +122,46 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 60px;
+            height: 64px;
             background: rgba(10, 10, 10, 0.95);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--color-border-primary);
-            z-index: 300;
+            z-index: var(--z-fixed);
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 var(--spacing-lg);
+            transition: all 0.3s ease;
         }
 
         .app-logo {
             display: flex;
             align-items: center;
-            gap: var(--spacing-md);
-            font-size: var(--font-size-2xl);
+            gap: var(--spacing-sm);
+            font-size: var(--font-size-xl);
             font-weight: 800;
             background: var(--gradient-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-decoration: none;
+            text-decoration: none;            transition: transform 0.3s ease;
+        }
+
+        .app-logo:hover {
+            transform: scale(1.05);
         }
 
         .app-logo i {
             background: var(--gradient-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            font-size: 1.5rem;
         }
 
         .header-nav {
             display: flex;
-            gap: var(--spacing-md);
+            gap: var(--spacing-sm);
             align-items: center;
         }
 
@@ -140,14 +172,18 @@
             color: var(--color-text-secondary);
             cursor: pointer;
             border-radius: var(--radius-md);
-            font-weight: 500;
+            font-weight: 600;
             font-size: var(--font-size-sm);
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             position: relative;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
         }
 
         .nav-tab-btn:hover {
             color: var(--color-text-primary);
+            background: var(--color-bg-tertiary);
         }
 
         .nav-tab-btn.active {
@@ -157,38 +193,49 @@
         .nav-tab-btn.active::after {
             content: '';
             position: absolute;
-            bottom: -10px;
-            left: 0;
-            right: 0;
-            height: 2px;
+            bottom: -12px;
+            left: 0;            right: 0;
+            height: 3px;
             background: var(--brand-accent);
             border-radius: 2px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
         }
 
         /* ========== MAIN CONTAINER ========== */
         .app-container {
-            margin-top: 60px;
-            min-height: calc(100vh - 60px);
+            margin-top: 64px;
+            min-height: calc(100vh - 64px);
         }
 
         /* ========== VIEWS ========== */
         .view {
             display: none;
-            min-height: calc(100vh - 60px);
+            min-height: calc(100vh - 64px);
+            animation: fadeIn 0.4s ease;
         }
 
         .view.active {
             display: block;
         }
 
-        /* ========== HOME VIEW (MAP + MECHANICS) ========== */
-        #homeView {
-            grid-template-columns: 1fr 300px;
-            gap: 0;
-            height: calc(100vh - 60px);
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* CORREÇÃO: homeView usa grid (não block) quando ativo */
+        /* ========== HOME VIEW (MAP + MECHANICS) ========== */
+        #homeView {
+            display: none;
+            grid-template-columns: 1fr 320px;
+            gap: 0;
+            height: calc(100vh - 64px);
+        }
+
         #homeView.active {
             display: grid;
         }
@@ -196,14 +243,22 @@
         #map {
             width: 100%;
             height: 100%;
-            z-index: 1;
-        }
+            z-index: 1;        }
 
         .mechanics-panel {
             background: var(--color-bg-card);
             border-left: 1px solid var(--color-border-primary);
             overflow-y: auto;
-            padding: var(--spacing-md);
+            padding: var(--spacing-lg);
+        }
+
+        .mechanics-panel h3 {
+            margin-bottom: var(--spacing-lg);
+            color: var(--brand-accent);
+            font-size: var(--font-size-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
         }
 
         .mechanic-item {
@@ -213,19 +268,21 @@
             padding: var(--spacing-md);
             margin-bottom: var(--spacing-md);
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
         .mechanic-item:hover {
             background: var(--color-bg-secondary);
             border-color: var(--brand-accent);
             transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
         }
 
         .mechanic-name {
             font-weight: 600;
-            font-size: var(--font-size-md);
+            font-size: var(--font-size-base);
             margin-bottom: var(--spacing-xs);
+            color: var(--color-text-primary);
         }
 
         .mechanic-info {
@@ -236,7 +293,6 @@
             gap: var(--spacing-xs);
             margin-bottom: var(--spacing-xs);
         }
-
         .mechanic-rating {
             color: var(--brand-warning);
         }
@@ -248,7 +304,7 @@
 
         /* ========== SOCIAL VIEW ========== */
         #socialView {
-            padding-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-2xl);
             background: var(--color-bg-primary);
         }
 
@@ -261,6 +317,12 @@
             border-bottom: 1px solid var(--color-border-primary);
             overflow-x: auto;
             scroll-behavior: smooth;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .stories-container::-webkit-scrollbar {
+            display: none;
         }
 
         .story {
@@ -271,7 +333,15 @@
             cursor: pointer;
             flex-shrink: 0;
             min-width: 80px;
+            transition: transform 0.3s ease;
         }
+
+        .story:hover {
+            transform: translateY(-4px);
+        }
+
+        .story-avatar-wrapper {
+            position: relative;        }
 
         .story-avatar {
             width: 72px;
@@ -279,11 +349,12 @@
             border-radius: 50%;
             border: 3px solid var(--brand-primary);
             object-fit: cover;
-            transition: transform 0.3s;
+            transition: transform 0.3s ease;
         }
 
         .story:hover .story-avatar {
             transform: scale(1.1);
+            box-shadow: var(--shadow-glow);
         }
 
         .story-name {
@@ -293,6 +364,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            font-weight: 500;
         }
 
         .add-story {
@@ -313,16 +385,76 @@
             color: var(--color-bg-primary);
             font-size: 12px;
             border: 3px solid var(--color-bg-primary);
+            transition: transform 0.3s ease;
         }
 
-        /* Feed Posts */
+        .story:hover .add-story-plus {
+            transform: scale(1.2) rotate(90deg);
+        }
+        /* Create Post Button */
+        .create-post-btn {
+            max-width: 600px;
+            margin: var(--spacing-lg) auto;
+            padding: var(--spacing-md) var(--spacing-lg);
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border-secondary);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .create-post-btn:hover {
+            border-color: var(--brand-accent);
+            box-shadow: var(--shadow-md);
+        }
+
+        .create-post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .create-post-text {
+            flex: 1;
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+        }
+
+        .create-post-actions {
+            display: flex;
+            gap: var(--spacing-md);
+        }
+
+        .create-post-action {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: transparent;
+            border: none;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);            transition: all 0.3s ease;
+        }
+
+        .create-post-action:hover {
+            background: var(--color-bg-tertiary);
+            color: var(--brand-accent);
+        }
+
+        /* Feed */
         .feed {
             max-width: 600px;
             margin: 0 auto;
-            padding: var(--spacing-lg);
-            gap: var(--spacing-lg);
+            padding: 0 var(--spacing-lg);
             display: flex;
             flex-direction: column;
+            gap: var(--spacing-lg);
         }
 
         .post-card {
@@ -330,7 +462,13 @@
             border-radius: var(--radius-lg);
             overflow: hidden;
             box-shadow: var(--shadow-md);
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .post-card:hover {
@@ -350,7 +488,7 @@
             width: 48px;
             height: 48px;
             border-radius: 50%;
-            object-fit: cover;
+            object-fit: cover;            border: 2px solid var(--brand-accent);
         }
 
         .post-user-info {
@@ -360,6 +498,7 @@
         .post-user-name {
             font-weight: 600;
             font-size: var(--font-size-base);
+            color: var(--color-text-primary);
         }
 
         .post-user-handle {
@@ -367,27 +506,47 @@
             color: var(--color-text-secondary);
         }
 
+        .post-menu-btn {
+            background: transparent;
+            border: none;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-md);
+            transition: all 0.3s ease;
+        }
+
+        .post-menu-btn:hover {
+            background: var(--color-bg-tertiary);
+            color: var(--color-text-primary);
+        }
+
         .post-image {
             width: 100%;
             object-fit: cover;
             aspect-ratio: 1;
             cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .post-image:hover {
+            transform: scale(1.02);
         }
 
         .post-content {
             padding: var(--spacing-md);
         }
 
-        .post-title {
-            font-weight: 600;
+        .post-title {            font-weight: 600;
             font-size: var(--font-size-lg);
             margin-bottom: var(--spacing-sm);
+            color: var(--color-text-primary);
         }
 
         .post-description {
             font-size: var(--font-size-sm);
             color: var(--color-text-secondary);
-            line-height: 1.5;
+            line-height: 1.6;
             margin-bottom: var(--spacing-md);
         }
 
@@ -403,7 +562,10 @@
 
         .post-stat {
             cursor: pointer;
-            transition: color 0.3s;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
         }
 
         .post-stat:hover {
@@ -414,6 +576,7 @@
             display: flex;
             gap: 0;
             justify-content: space-around;
+            border-top: 1px solid var(--color-border-secondary);
         }
 
         .post-action-btn {
@@ -423,9 +586,13 @@
             background: transparent;
             color: var(--color-text-secondary);
             cursor: pointer;
-            font-size: var(--font-size-base);
-            transition: all 0.3s;
+            font-size: var(--font-size-sm);            transition: all 0.3s ease;
             border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+            font-weight: 500;
         }
 
         .post-action-btn:hover {
@@ -437,11 +604,20 @@
             color: var(--brand-primary);
         }
 
+        .post-action-btn.liked i {
+            animation: heartBeat 0.4s ease;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
         /* ========== PROFILE VIEW ========== */
         .profile-container {
             max-width: 600px;
             margin: 0 auto;
-            padding: var(--spacing-lg);
+            padding: var(--spacing-xl) var(--spacing-lg);
         }
 
         .profile-header {
@@ -455,13 +631,32 @@
             border-radius: 50%;
             object-fit: cover;
             margin: 0 auto var(--spacing-md);
-            border: 3px solid var(--brand-accent);
+            border: 4px solid var(--brand-accent);
+            box-shadow: var(--shadow-lg);
+            transition: transform 0.3s ease;
+        }
+        .profile-avatar:hover {
+            transform: scale(1.05);
         }
 
         .profile-name {
             font-size: var(--font-size-2xl);
             font-weight: 700;
             margin-bottom: var(--spacing-xs);
+            color: var(--color-text-primary);
+        }
+
+        .profile-username {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .profile-bio {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+            margin-bottom: var(--spacing-lg);
         }
 
         .profile-stats {
@@ -473,34 +668,39 @@
 
         .stat-item {
             background: var(--color-bg-card);
+            border: 1px solid var(--color-border-secondary);
             border-radius: var(--radius-md);
             padding: var(--spacing-md);
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
         .stat-item:hover {
             background: var(--color-bg-tertiary);
-            transform: translateY(-2px);
+            transform: translateY(-4px);
+            border-color: var(--brand-accent);
+            box-shadow: var(--shadow-md);
         }
 
         .stat-value {
-            font-size: var(--font-size-2xl);
-            font-weight: 700;
+            font-size: var(--font-size-2xl);            font-weight: 700;
             color: var(--brand-accent);
+            display: block;
         }
 
         .stat-label {
             font-size: var(--font-size-xs);
             color: var(--color-text-secondary);
             margin-top: var(--spacing-xs);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .profile-actions {
             display: flex;
             gap: var(--spacing-md);
-            margin-top: var(--spacing-lg);
+            margin-top: var(--spacing-xl);
         }
 
         .profile-btn {
@@ -510,7 +710,12 @@
             border-radius: var(--radius-md);
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            font-size: var(--font-size-sm);
         }
 
         .profile-btn-primary {
@@ -518,19 +723,30 @@
             color: white;
         }
 
+        .profile-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
         .profile-btn-secondary {
             background: var(--color-bg-card);
             color: var(--color-text-primary);
             border: 1px solid var(--color-border-secondary);
         }
-
-        .profile-btn:hover {
+        .profile-btn-secondary:hover {
+            background: var(--color-bg-tertiary);
+            border-color: var(--brand-accent);
             transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
         }
 
         .profile-posts {
-            margin-top: var(--spacing-xl);
+            margin-top: var(--spacing-2xl);
+        }
+
+        .profile-posts h2 {
+            margin-bottom: var(--spacing-lg);
+            font-size: var(--font-size-xl);
+            color: var(--color-text-primary);
         }
 
         .posts-grid {
@@ -545,7 +761,7 @@
             overflow: hidden;
             cursor: pointer;
             position: relative;
-            transition: transform 0.3s;
+            transition: transform 0.3s ease;
         }
 
         .post-grid-item:hover {
@@ -556,6 +772,29 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        .post-grid-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-lg);
+            opacity: 0;            transition: opacity 0.3s ease;
+        }
+
+        .post-grid-item:hover .post-grid-overlay {
+            opacity: 1;
+        }
+
+        .post-grid-stat {
+            color: white;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
         }
 
         /* ========== STORY MODAL ========== */
@@ -570,6 +809,7 @@
             z-index: var(--z-modal);
             align-items: center;
             justify-content: center;
+            animation: fadeIn 0.3s ease;
         }
 
         .story-modal.active {
@@ -584,6 +824,7 @@
             background: var(--color-bg-secondary);
             border-radius: var(--radius-lg);
             overflow: hidden;
+            box-shadow: var(--shadow-lg);
         }
 
         .story-image {
@@ -591,10 +832,9 @@
             height: 100%;
             object-fit: cover;
         }
-
         .story-user-info {
             position: absolute;
-            top: var(--spacing-md);
+            top: var(--spacing-lg);
             left: var(--spacing-md);
             right: var(--spacing-md);
             display: flex;
@@ -614,6 +854,7 @@
 
         .story-user-name {
             font-weight: 600;
+            font-size: var(--font-size-sm);
         }
 
         .story-time {
@@ -634,13 +875,12 @@
             font-size: 18px;
             cursor: pointer;
             z-index: 9000;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
         }
-
         .story-close:hover {
             background: rgba(220, 0, 0, 0.9);
             border-color: #ff3e3e;
@@ -670,10 +910,191 @@
             color: white;
             cursor: pointer;
             font-size: 1rem;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        .story-nav button:hover {
+            background: rgba(0, 0, 0, 0.85);
+            transform: scale(1.1);
+        }
+
+        .story-modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 120px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.65), transparent);
+            z-index: 5;
+            pointer-events: none;
+        }
+        .story-progress {
+            position: absolute;
+            top: 10px; left: 12px; right: 12px;
+            display: flex; gap: 4px;
+            z-index: 20;
+        }
+
+        .story-progress-bar {
+            flex: 1; height: 3px;
+            background: rgba(255,255,255,0.35);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .story-progress-bar.active .story-progress-fill {
+            height: 100%;
+            background: white;
+            animation: storyProgress 5s linear forwards;
+        }
+
+        .story-progress-bar.done .story-progress-fill {
+            height: 100%; background: white; width: 100%;
+        }
+
+        @keyframes storyProgress {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        /* ========== CREATE POST MODAL ========== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: var(--z-modal);
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-lg);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: var(--color-bg-card);
+            border-radius: var(--radius-xl);
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-header {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--color-border-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-md);
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--color-bg-tertiary);
+            color: var(--color-text-primary);
+        }
+
+        .modal-body {
+            padding: var(--spacing-lg);
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-label {
+            display: block;            margin-bottom: var(--spacing-sm);
+            font-weight: 600;
+            color: var(--color-text-primary);
+            font-size: var(--font-size-sm);
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: var(--spacing-md);
+            background: var(--color-bg-tertiary);
+            border: 1px solid var(--color-border-secondary);
+            border-radius: var(--radius-md);
+            color: var(--color-text-primary);
+            font-family: inherit;
+            font-size: var(--font-size-sm);
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--brand-accent);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: var(--spacing-md) var(--spacing-xl);
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: var(--font-size-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .btn-secondary {
+            background: var(--color-bg-tertiary);
+            color: var(--color-text-primary);
+            border: 1px solid var(--color-border-secondary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-bg-secondary);
+            border-color: var(--brand-accent);
         }
 
         /* ========== MOBILE MECHANICS BUTTON ========== */
@@ -692,125 +1113,34 @@
             font-size: var(--font-size-sm);
             cursor: pointer;
             box-shadow: 0 4px 20px rgba(255,62,62,0.4);
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             gap: 8px;
             align-items: center;
         }
-        .fab-mechanics:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(255,62,62,0.5); }
 
-        @media (max-width: 768px) {
-            .fab-mechanics { display: flex; }
+        .fab-mechanics:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 24px rgba(255,62,62,0.5);
         }
 
-        /* ========== STORY GRADIENT OVERLAY ========== */
-        .story-modal-content::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 120px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.65), transparent);
-            z-index: 5;
-            pointer-events: none;
+        /* ========== TOAST ========== */
+        .toast {
+            position: fixed;            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-bg-card);
+            color: var(--color-text-primary);
+            padding: var(--spacing-md) var(--spacing-xl);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-border-primary);
+            z-index: var(--z-toast);
+            animation: slideUp 0.3s ease;
+            max-width: 90%;
+            font-size: var(--font-size-sm);
+            box-shadow: var(--shadow-lg);
         }
 
-        /* Story progress bar */
-        .story-progress {
-            position: absolute;
-            top: 10px; left: 12px; right: 12px;
-            display: flex; gap: 4px;
-            z-index: 20;
-        }
-        .story-progress-bar {
-            flex: 1; height: 3px;
-            background: rgba(255,255,255,0.35);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-        .story-progress-bar.active .story-progress-fill {
-            height: 100%;
-            background: white;
-            animation: storyProgress 5s linear forwards;
-        }
-        .story-progress-bar.done .story-progress-fill {
-            height: 100%; background: white; width: 100%;
-        }
-        @keyframes storyProgress {
-            from { width: 0; }
-            to { width: 100%; }
-        }
-
-        /* ========== RESPONSIVE ========== */
-        @media (max-width: 768px) {
-            #homeView {
-                grid-template-columns: 1fr;
-            }
-
-            .mechanics-panel {
-                display: none;
-            }
-
-            .header-nav {
-                gap: var(--spacing-sm);
-            }
-
-            .nav-tab-btn {
-                padding: var(--spacing-sm) var(--spacing-md);
-                font-size: var(--font-size-xs);
-            }
-
-            .feed {
-                padding: var(--spacing-md);
-            }
-
-            .posts-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .app-header {
-                padding: 0 var(--spacing-md);
-            }
-
-            .app-logo {
-                font-size: var(--font-size-lg);
-            }
-
-            .nav-tab-btn {
-                padding: var(--spacing-xs) var(--spacing-sm);
-            }
-
-            .posts-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stories-container {
-                padding: var(--spacing-md);
-            }
-        }
-
-        /* ========== ANIMATIONS ========== */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes loadBar {
-            0%   { transform: translateX(-100%); }
-            50%  { transform: translateX(150%); }
-            100% { transform: translateX(400%); }
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* ========== APP LOADING OVERLAY ========== */
+        /* ========== LOADING OVERLAY ========== */
         #appLoader {
             position: fixed;
             inset: 0;
@@ -844,10 +1174,13 @@
         .loader-spinner {
             width: 44px;
             height: 44px;
-            border: 4px solid var(--color-border-secondary);
-            border-top-color: var(--brand-primary);
+            border: 4px solid var(--color-border-secondary);            border-top-color: var(--brand-primary);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         .loader-text {
@@ -855,20 +1188,195 @@
             color: var(--color-text-secondary);
         }
 
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--color-bg-card);
-            color: var(--color-text-primary);
-            padding: var(--spacing-md) var(--spacing-lg);
-            border-radius: var(--radius-md);
-            border: 1px solid var(--color-border-primary);
-            z-index: var(--z-toast);
-            animation: slideUp 0.3s ease;
-            max-width: 90%;
-            font-size: var(--font-size-sm);
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 1024px) {
+            #homeView {
+                grid-template-columns: 1fr 280px;
+            }
+
+            .mechanics-panel {
+                padding: var(--spacing-md);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .app-header {
+                padding: 0 var(--spacing-md);
+                height: 56px;
+            }
+
+            .app-container {
+                margin-top: 56px;
+            }
+
+            .app-logo {
+                font-size: var(--font-size-lg);
+            }
+
+            .app-logo i {
+                font-size: 1.25rem;
+            }
+
+            .header-nav {
+                gap: var(--spacing-xs);
+            }
+
+            .nav-tab-btn {
+                padding: var(--spacing-xs) var(--spacing-md);
+                font-size: var(--font-size-xs);            }
+
+            .nav-tab-btn i {
+                display: none;
+            }
+
+            #homeView {
+                grid-template-columns: 1fr;
+            }
+
+            .mechanics-panel {
+                display: none;
+            }
+
+            .fab-mechanics {
+                display: flex;
+            }
+
+            .stories-container {
+                padding: var(--spacing-md);
+                gap: var(--spacing-sm);
+            }
+
+            .story {
+                min-width: 70px;
+            }
+
+            .story-avatar {
+                width: 64px;
+                height: 64px;
+            }
+
+            .story-name {
+                font-size: 10px;
+                max-width: 64px;
+            }
+
+            .create-post-btn {
+                margin: var(--spacing-md);
+                padding: var(--spacing-md);
+            }
+
+            .feed {
+                padding: 0 var(--spacing-md);
+                gap: var(--spacing-md);
+            }
+
+            .post-card {
+                border-radius: var(--radius-md);
+            }
+            .profile-container {
+                padding: var(--spacing-lg) var(--spacing-md);
+            }
+
+            .profile-avatar {
+                width: 100px;
+                height: 100px;
+            }
+
+            .profile-name {
+                font-size: var(--font-size-xl);
+            }
+
+            .profile-stats {
+                gap: var(--spacing-sm);
+            }
+
+            .stat-item {
+                padding: var(--spacing-sm);
+            }
+
+            .stat-value {
+                font-size: var(--font-size-xl);
+            }
+
+            .posts-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--spacing-sm);
+            }
+
+            .modal-content {
+                max-height: 95vh;
+                border-radius: var(--radius-lg);
+            }
+
+            .modal-header,
+            .modal-body {
+                padding: var(--spacing-md);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .app-logo span {
+                display: none;
+            }
+
+            .nav-tab-btn {
+                padding: var(--spacing-xs);
+            }
+            .create-post-text {
+                display: none;
+            }
+
+            .create-post-actions {
+                gap: var(--spacing-sm);
+            }
+
+            .create-post-action span {
+                display: none;
+            }
+
+            .post-header {
+                padding: var(--spacing-sm);
+            }
+
+            .post-avatar {
+                width: 40px;
+                height: 40px;
+            }
+
+            .post-user-name {
+                font-size: var(--font-size-sm);
+            }
+
+            .post-content {
+                padding: var(--spacing-sm);
+            }
+
+            .post-title {
+                font-size: var(--font-size-base);
+            }
+
+            .post-description {
+                font-size: var(--font-size-xs);
+            }
+
+            .post-action-btn {
+                padding: var(--spacing-sm);
+                font-size: var(--font-size-xs);
+            }
+
+            .profile-actions {
+                flex-direction: column;
+            }
+
+            .profile-btn {
+                width: 100%;
+            }        }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes loadBar {
+            0%   { transform: translateX(-100%); }
+            50%  { transform: translateX(150%); }
+            100% { transform: translateX(400%); }
         }
     </style>
 </head>
@@ -892,15 +1400,15 @@
         <nav class="header-nav">
             <button class="nav-tab-btn active" onclick="switchView('home', this)">
                 <i class="fas fa-map"></i>
-                Mapa
+                <span>Mapa</span>
             </button>
             <button class="nav-tab-btn" onclick="switchView('social', this)">
                 <i class="fas fa-images"></i>
-                Social
+                <span>Social</span>
             </button>
             <button class="nav-tab-btn" onclick="switchView('profile', this)">
                 <i class="fas fa-user"></i>
-                Perfil
+                <span>Perfil</span>
             </button>
         </nav>
     </header>
@@ -911,11 +1419,11 @@
         <div id="homeView" class="view active">
             <div id="map"></div>
             <div class="mechanics-panel">
-                <h3 style="margin-bottom: 1rem; color: var(--brand-accent);">
-                    <i class="fas fa-wrench"></i> Mecânicas Próximas
+                <h3>                    <i class="fas fa-wrench"></i>
+                    Oficinas Próximas
                 </h3>
-                <button onclick="APP.locationRequested=false; APP.mechanicsSearching=false; requestLocation();" style="width:100%;margin-bottom:1rem;padding:0.6rem;background:var(--gradient-primary);border:none;border-radius:var(--radius-md);color:#fff;font-weight:600;cursor:pointer;font-size:var(--font-size-sm);">
-                    <i class="fas fa-crosshairs"></i> Atualizar minha localização
+                <button onclick="APP.locationRequested=false; APP.mechanicsSearching=false; requestLocation();" style="width:100%;margin-bottom:1rem;padding:0.75rem;background:var(--gradient-primary);border:none;border-radius:var(--radius-md);color:#fff;font-weight:600;cursor:pointer;font-size:var(--font-size-sm);transition:all 0.3s ease;">
+                    <i class="fas fa-crosshairs"></i> Atualizar Localização
                 </button>
                 <div id="mechanicsList"></div>
             </div>
@@ -925,12 +1433,28 @@
         <div id="socialView" class="view">
             <!-- Stories -->
             <div class="stories-container" id="storiesContainer">
-                <div class="story add-story" onclick="addStory()">
-                    <div style="position: relative;">
+                <div class="story add-story" onclick="openCreateStoryModal()">
+                    <div class="story-avatar-wrapper">
                         <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user" alt="Adicionar" class="story-avatar" style="opacity: 0.6;">
                         <div class="add-story-plus"><i class="fas fa-plus"></i></div>
                     </div>
                     <span class="story-name">Seu Story</span>
+                </div>
+            </div>
+
+            <!-- Create Post Button -->
+            <div class="create-post-btn" onclick="openCreatePostModal()">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user" alt="Você" class="create-post-avatar">
+                <div class="create-post-text">No que você está trabalhando?</div>
+                <div class="create-post-actions">
+                    <button class="create-post-action">
+                        <i class="fas fa-image"></i>
+                        <span>Foto</span>
+                    </button>
+                    <button class="create-post-action">
+                        <i class="fas fa-video"></i>
+                        <span>Vídeo</span>
+                    </button>
                 </div>
             </div>
 
@@ -944,8 +1468,7 @@
                 <div class="profile-header">
                     <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user" alt="Perfil" class="profile-avatar">
                     <h1 class="profile-name">João Silva</h1>
-                    <p style="color: var(--color-text-secondary);">@joaosilva</p>
-                    <p style="margin-top: 1rem; font-size: var(--font-size-sm); color: var(--color-text-secondary);">
+                    <p class="profile-username">@joaosilva</p>                    <p class="profile-bio">
                         🏎️ Entusiasta automotivo<br>
                         🔧 Preparador de carros<br>
                         📍 São Paulo, SP
@@ -954,15 +1477,15 @@
 
                 <div class="profile-stats">
                     <div class="stat-item">
-                        <div class="stat-value">38</div>
-                        <div class="stat-label">Veículos</div>
+                        <span class="stat-value" id="statPosts">0</span>
+                        <div class="stat-label">Posts</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value">2.4K</div>
+                        <span class="stat-value">2.4K</span>
                         <div class="stat-label">Seguidores</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value">856</div>
+                        <span class="stat-value">856</span>
                         <div class="stat-label">Seguindo</div>
                     </div>
                 </div>
@@ -970,7 +1493,7 @@
                 <div class="profile-actions">
                     <button class="profile-btn profile-btn-primary" onclick="showToast('Perfil em edição')">
                         <i class="fas fa-edit"></i>
-                        Editar
+                        Editar Perfil
                     </button>
                     <button class="profile-btn profile-btn-secondary" onclick="shareProfile()">
                         <i class="fas fa-share"></i>
@@ -979,7 +1502,7 @@
                 </div>
 
                 <div class="profile-posts">
-                    <h2 style="margin-bottom: var(--spacing-lg); font-size: var(--font-size-xl);">Meus Veículos</h2>
+                    <h2>Meus Posts</h2>
                     <div class="posts-grid" id="profileGrid"></div>
                 </div>
             </div>
@@ -994,10 +1517,9 @@
     <!-- ========== MOBILE MECHANICS SHEET ========== -->
     <div id="mobileSheet" style="display:none;position:fixed;inset:0;z-index:350;background:rgba(0,0,0,0.7)" onclick="if(event.target===this)closeMobileSheet()">
         <div style="position:absolute;bottom:0;left:0;right:0;max-height:70vh;background:var(--color-bg-card);border-radius:24px 24px 0 0;padding:1.5rem;overflow-y:auto;">
-            <div style="width:40px;height:4px;background:var(--color-border-secondary);border-radius:2px;margin:0 auto 1.25rem;"></div>
-            <h3 style="color:var(--brand-accent);margin-bottom:1rem;"><i class="fas fa-wrench"></i> Mecânicas Próximas</h3>
-            <button onclick="APP.locationRequested=false;APP.mechanicsSearching=false;requestLocation();closeMobileSheet();" style="width:100%;margin-bottom:1rem;padding:0.65rem;background:var(--gradient-primary);border:none;border-radius:var(--radius-md);color:#fff;font-weight:600;cursor:pointer;">
-                <i class="fas fa-crosshairs"></i> Atualizar localização
+            <div style="width:40px;height:4px;background:var(--color-border-secondary);border-radius:2px;margin:0 auto 1.25rem;"></div>            <h3 style="color:var(--brand-accent);margin-bottom:1rem;"><i class="fas fa-wrench"></i> Oficinas Próximas</h3>
+            <button onclick="APP.locationRequested=false;APP.mechanicsSearching=false;requestLocation();closeMobileSheet();" style="width:100%;margin-bottom:1rem;padding:0.75rem;background:var(--gradient-primary);border:none;border-radius:var(--radius-md);color:#fff;font-weight:600;cursor:pointer;">
+                <i class="fas fa-crosshairs"></i> Atualizar Localização
             </button>
             <div id="mobileSheetList"></div>
         </div>
@@ -1006,7 +1528,6 @@
     <!-- ========== STORY MODAL ========== -->
     <div class="story-modal" id="storyModal" onclick="handleModalBgClick(event)">
         <div class="story-modal-content" onclick="event.stopPropagation()">
-            <!-- Progress bars -->
             <div class="story-progress" id="storyProgress"></div>
             <img src="" alt="Story" class="story-image" id="storyImage">
             <div class="story-user-info">
@@ -1017,7 +1538,6 @@
                 </div>
             </div>
         </div>
-        <!-- Botões fixos — sempre visíveis sobre o modal -->
         <button class="story-close" onclick="event.stopPropagation(); closeStory()">
             <i class="fas fa-times"></i>
         </button>
@@ -1027,96 +1547,194 @@
         </div>
     </div>
 
+    <!-- ========== CREATE POST MODAL ========== -->
+    <div class="modal" id="createPostModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Criar Post</h2>
+                <button class="modal-close" onclick="closeCreatePostModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="createPostForm" onsubmit="createPost(event)">
+                    <div class="form-group">
+                        <label class="form-label">Título</label>
+                        <input type="text" class="form-input" id="postTitle" placeholder="Ex: Meu novo BMW M4" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Descrição</label>
+                        <textarea class="form-textarea" id="postDescription" placeholder="Conte sobre seu veículo..." required></textarea>
+                    </div>
+                    <div class="form-group">                        <label class="form-label">URL da Imagem (opcional)</label>
+                        <input type="url" class="form-input" id="postImage" placeholder="https://exemplo.com/imagem.jpg">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeCreatePostModal()">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i>
+                            Publicar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== CREATE STORY MODAL ========== -->
+    <div class="modal" id="createStoryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Criar Story</h2>
+                <button class="modal-close" onclick="closeCreateStoryModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="createStoryForm" onsubmit="createStory(event)">
+                    <div class="form-group">
+                        <label class="form-label">URL da Imagem</label>
+                        <input type="url" class="form-input" id="storyImage" placeholder="https://exemplo.com/story.jpg" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeCreateStoryModal()">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check"></i>
+                            Publicar Story
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- ========== SCRIPTS ========== -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // ========== DATA ========== 
+        // ========== APP STATE ==========
         const APP = {
             currentStoryIndex: 0,
             userLocation: { lat: -23.5505, lng: -46.6333 },
-            mapInitialized: false,
-            locationRequested: false,
+            mapInitialized: false,            locationRequested: false,
             mechanicsSearching: false,
             storyTimer: null
         };
 
-        const STORIES = [
-            {
-                user: "Carlos Motors",
-                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=carlos",
-                image: "bmw.jpg",
-                time: "há 2 horas"
-            },
-            {
-                user: "Ana Racing",
-                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=ana",
-                image: "porsche.jpg",
-                time: "há 1 hora"
-            },
-            {
-                user: "Bruno Prep",
-                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=bruno",
-                image: "civic.jpg",
-                time: "há 30 min"
-            },
-            {
-                user: "Marina Motors",
-                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=marina",
-                image: "bmw.jpg",
-                time: "há 15 min"
-            }
-        ];
+        // ========== LOCAL STORAGE KEYS ==========
+        const STORAGE_KEYS = {
+            POSTS: 'autoconnect_posts',
+            STORIES: 'autoconnect_stories',
+            USER: 'autoconnect_user'
+        };
 
-        const POSTS = [
+        // ========== DEFAULT DATA ==========
+        const DEFAULT_POSTS = [
             {
                 id: 1,
                 user: "Carlos Motors",
                 avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=carlos",
-                image: "bmw.jpg",
+                image: "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=600",
                 title: "Meu novo BMW M440i 🔥",
                 description: "Finalmente chegou! Preparação inicial já começou. Turbo precisa de ajustes.",
                 likes: 1240,
                 comments: 156,
-                liked: false
+                liked: false,
+                timestamp: Date.now() - 7200000
             },
             {
                 id: 2,
                 user: "Ana Racing",
                 avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=ana",
-                image: "porsche.jpg",
+                image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600",
                 title: "Porsche 911 Turbo - 2º lugar na corrida! 🏆",
                 description: "Que adrenalina! Corrida de fim de semana. Próxima meta: 1º lugar!",
                 likes: 2156,
                 comments: 342,
-                liked: false
+                liked: false,
+                timestamp: Date.now() - 3600000
             },
             {
                 id: 3,
                 user: "Bruno Prep",
                 avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=bruno",
-                image: "civic.jpg",
+                image: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600",
                 title: "Civic 2024 renovado! 💯",
                 description: "Bumper novo, suspensão rebaixada e rodão de 19. Ficou de outro nível!",
                 likes: 3450,
                 comments: 567,
-                liked: false
+                liked: false,
+                timestamp: Date.now() - 1800000
+            }        ];
+
+        const DEFAULT_STORIES = [
+            {
+                id: 1,
+                user: "Carlos Motors",
+                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=carlos",
+                image: "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=500",
+                time: "há 2 horas"
+            },
+            {
+                id: 2,
+                user: "Ana Racing",
+                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=ana",
+                image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500",
+                time: "há 1 hora"
+            },
+            {
+                id: 3,
+                user: "Bruno Prep",
+                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=bruno",
+                image: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=500",
+                time: "há 30 min"
+            },
+            {
+                id: 4,
+                user: "Marina Motors",
+                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=marina",
+                image: "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=500",
+                time: "há 15 min"
             }
         ];
 
-        let MECHANICS = []; // Será preenchido com dados reais da Overpass API
+        let STORIES = [];
+        let POSTS = [];
+        let MECHANICS = [];
 
-        // ========== INITIALIZATION ========== 
+        // ========== LOCAL STORAGE FUNCTIONS ==========
+        function loadFromStorage(key, defaultValue) {
+            try {
+                const stored = localStorage.getItem(key);
+                return stored ? JSON.parse(stored) : defaultValue;
+            } catch (error) {
+                console.error('Erro ao carregar do localStorage:', error);
+                return defaultValue;
+            }
+        }
+
+        function saveToStorage(key, value) {
+            try {                localStorage.setItem(key, JSON.stringify(value));
+            } catch (error) {
+                console.error('Erro ao salvar no localStorage:', error);
+            }
+        }
+
+        // ========== INITIALIZATION ==========
         document.addEventListener('DOMContentLoaded', () => {
             console.log('🚀 Inicializando AutoConnect...');
+            
+            // Load data from localStorage or use defaults
+            POSTS = loadFromStorage(STORAGE_KEYS.POSTS, DEFAULT_POSTS);
+            STORIES = loadFromStorage(STORAGE_KEYS.STORIES, DEFAULT_STORIES);
+            
             renderStories();
             renderFeed();
             renderProfileGallery();
+            updateProfileStats();
             initMap();
             
-            // Aguarda um pouco para o mapa carregar
             setTimeout(() => {
                 console.log('📍 Solicitando localização...');
-                // Esconde o loader assim que o mapa estiver pronto
                 const loader = document.getElementById('appLoader');
                 loader.classList.add('hidden');
                 setTimeout(() => loader.remove(), 600);
@@ -1124,16 +1742,14 @@
             }, 800);
         });
 
-        // ========== VIEWS ========== 
+        // ========== VIEWS ==========
         function switchView(viewName, btn) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById(viewName + 'View').classList.add('active');
 
             document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
-            const activeBtn = btn ? btn.closest('.nav-tab-btn') : null;
-            if (activeBtn) activeBtn.classList.add('active');
+            if (btn) btn.classList.add('active');
 
-            // FAB só aparece no mapa (mobile)
             const fab = document.getElementById('fabMechanics');
             if (fab) fab.style.display = viewName === 'home' ? '' : 'none';
 
@@ -1142,14 +1758,21 @@
             }
         }
 
-        // ========== STORIES ========== 
+        // ========== STORIES ==========
         function renderStories() {
             const container = document.getElementById('storiesContainer');
+            const addStoryBtn = container.querySelector('.add-story');
+                        // Clear existing stories (keep add button)
+            const existingStories = container.querySelectorAll('.story:not(.add-story)');
+            existingStories.forEach(s => s.remove());
+            
             STORIES.forEach((story, idx) => {
                 const storyEl = document.createElement('div');
                 storyEl.className = 'story';
                 storyEl.innerHTML = `
-                    <img src="${story.avatar}" alt="${story.user}" class="story-avatar" onclick="viewStory(${idx})" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=default'">
+                    <div class="story-avatar-wrapper">
+                        <img src="${story.avatar}" alt="${story.user}" class="story-avatar" onclick="viewStory(${idx})" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=default'">
+                    </div>
                     <span class="story-name">${story.user.split(' ')[0]}</span>
                 `;
                 container.appendChild(storyEl);
@@ -1163,7 +1786,6 @@
             const storyAvatar = document.getElementById('storyAvatar');
             const modal = document.getElementById('storyModal');
 
-            // Render progress bars
             const prog = document.getElementById('storyProgress');
             prog.innerHTML = STORIES.map((_, i) => `
                 <div class="story-progress-bar ${i < index ? 'done' : i === index ? 'active' : ''}">
@@ -1185,25 +1807,16 @@
             document.getElementById('storyTime').textContent = story.time;
             modal.classList.add('active');
 
-            // Auto-avança depois de 5s
             clearTimeout(APP.storyTimer);
             APP.storyTimer = setTimeout(() => {
                 if (index < STORIES.length - 1) nextStory();
                 else closeStory();
-            }, 5000);
-            
+            }, 5000);            
             document.removeEventListener('keydown', handleStoryKeydown);
             document.addEventListener('keydown', handleStoryKeydown);
         }
 
         function handleModalBgClick(e) {
-            // Fecha só se clicar no fundo escuro (não no conteúdo nem nos botões)
-            if (e.target.id === 'storyModal') {
-                closeStory();
-            }
-        }
-
-        function handleModalClick(e) {
             if (e.target.id === 'storyModal') {
                 closeStory();
             }
@@ -1232,84 +1845,194 @@
             viewStory(APP.currentStoryIndex);
         }
 
-        function addStory() {
-            showToast('Câmera abriria aqui para adicionar seu story');
+        function openCreateStoryModal() {
+            document.getElementById('createStoryModal').classList.add('active');
         }
 
+        function closeCreateStoryModal() {
+            document.getElementById('createStoryModal').classList.remove('active');
+            document.getElementById('createStoryForm').reset();
+        }
+
+        function createStory(event) {
+            event.preventDefault();
+            
+            const imageUrl = document.getElementById('storyImage').value;
+            
+            const newStory = {
+                id: Date.now(),                user: "Você",
+                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=user",
+                image: imageUrl || 'https://via.placeholder.com/500x600/1a1a1a/ff3e3e?text=Seu+Story',
+                time: "agora"
+            };
+            
+            STORIES.unshift(newStory);
+            saveToStorage(STORAGE_KEYS.STORIES, STORIES);
+            renderStories();
+            closeCreateStoryModal();
+            showToast('✅ Story publicado com sucesso!');
+        }
+
+        // ========== FEED ==========
         function renderFeed() {
             const feed = document.getElementById('feed');
-            feed.innerHTML = POSTS.map((post, idx) => `
-                <div class="post-card">
-                    <div class="post-header">
-                        <img src="${post.avatar}" alt="${post.user}" class="post-avatar" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=default'">
-                        <div class="post-user-info">
-                            <div class="post-user-name">${post.user}</div>
-                            <div class="post-user-handle">há ${idx === 0 ? '2 horas' : idx === 1 ? '1 hora' : '30 min'}</div>
+            
+            feed.innerHTML = POSTS.map((post) => {
+                const timeAgo = getTimeAgo(post.timestamp);
+                return `
+                    <div class="post-card">
+                        <div class="post-header">
+                            <img src="${post.avatar}" alt="${post.user}" class="post-avatar" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=default'">
+                            <div class="post-user-info">
+                                <div class="post-user-name">${post.user}</div>
+                                <div class="post-user-handle">${timeAgo}</div>
+                            </div>
+                            <button class="post-menu-btn">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </button>
+                        </div>
+                        <img src="${post.image}" alt="${post.title}" class="post-image" onerror="this.style.background='#1a1a1a';this.style.minHeight='200px'">
+                        <div class="post-content">
+                            <h3 class="post-title">${post.title}</h3>
+                            <p class="post-description">${post.description}</p>
+                            <div class="post-stats">
+                                <span class="post-stat">❤️ ${post.likes.toLocaleString('pt-BR')} curtidas</span>
+                                <span class="post-stat">💬 ${post.comments.toLocaleString('pt-BR')} comentários</span>
+                            </div>
+                        </div>
+                        <div class="post-actions">
+                            <button class="post-action-btn ${post.liked ? 'liked' : ''}" onclick="toggleLike(${post.id}, this)">
+                                <i class="fas fa-heart"></i>
+                                <span>Curtir</span>
+                            </button>
+                            <button class="post-action-btn" onclick="showToast('💬 Comentários em breve!')">
+                                <i class="fas fa-comment"></i>
+                                <span>Comentar</span>
+                            </button>
+                            <button class="post-action-btn" onclick="sharePost()">                                <i class="fas fa-share"></i>
+                                <span>Compartilhar</span>
+                            </button>
                         </div>
                     </div>
-                    <img src="${post.image}" alt="${post.title}" class="post-image" onclick="viewStory(${idx % STORIES.length})" style="cursor:pointer" onerror="this.onerror=null;this.style.background='#1a1a1a';this.style.minHeight='200px'">
-                    <div class="post-content">
-                        <h3 class="post-title">${post.title}</h3>
-                        <p class="post-description">${post.description}</p>
-                        <div class="post-stats">
-                            <span class="post-stat" onclick="toggleLike(this.parentElement.previousElementSibling)">❤️ ${post.likes.toLocaleString('pt-BR')} curtidas</span>
-                            <span class="post-stat">💬 ${post.comments.toLocaleString('pt-BR')} comentários</span>
-                        </div>
-                    </div>
-                    <div class="post-actions">
-                        <button class="post-action-btn ${post.liked ? 'liked' : ''}" onclick="toggleLike(this)" data-post="${post.id}">
-                            <i class="fas fa-heart"></i> Curtir
-                        </button>
-                        <button class="post-action-btn" onclick="showToast('💬 Comentários em breve!')">
-                            <i class="fas fa-comment"></i> Comentar
-                        </button>
-                        <button class="post-action-btn" onclick="sharePost()">
-                            <i class="fas fa-share"></i> Compartilhar
-                        </button>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
-        function toggleLike(btn) {
-            btn.classList.toggle('liked');
-            showToast(btn.classList.contains('liked') ? '❤️ Curtido!' : 'Descurtido');
+        function getTimeAgo(timestamp) {
+            const seconds = Math.floor((Date.now() - timestamp) / 1000);
+            
+            if (seconds < 60) return 'agora';
+            if (seconds < 3600) return `há ${Math.floor(seconds / 60)} min`;
+            if (seconds < 86400) return `há ${Math.floor(seconds / 3600)} horas`;
+            return `há ${Math.floor(seconds / 86400)} dias`;
+        }
+
+        function toggleLike(postId, btn) {
+            const post = POSTS.find(p => p.id === postId);
+            if (!post) return;
+            
+            post.liked = !post.liked;
+            post.likes += post.liked ? 1 : -1;
+            
+            saveToStorage(STORAGE_KEYS.POSTS, POSTS);
+            renderFeed();
+            
+            showToast(post.liked ? '❤️ Curtido!' : 'Descurtido');
         }
 
         function sharePost() {
             if (navigator.share) {
-                navigator.share({ title: 'AutoConnect', text: 'Confira este veículo!', url: window.location.href });
+                navigator.share({ 
+                    title: 'AutoConnect', 
+                    text: 'Confira este veículo!', 
+                    url: window.location.href 
+                });
             } else {
-                showToast('Link copiado!');
+                showToast('📋 Link copiado!');
             }
         }
 
-        // ========== PROFILE ========== 
+        function openCreatePostModal() {
+            document.getElementById('createPostModal').classList.add('active');
+        }
+
+        function closeCreatePostModal() {
+            document.getElementById('createPostModal').classList.remove('active');
+            document.getElementById('createPostForm').reset();        }
+
+        function createPost(event) {
+            event.preventDefault();
+            
+            const title = document.getElementById('postTitle').value;
+            const description = document.getElementById('postDescription').value;
+            const imageUrl = document.getElementById('postImage').value;
+            
+            const newPost = {
+                id: Date.now(),
+                user: "Você",
+                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=user",
+                image: imageUrl || 'https://via.placeholder.com/600x600/1a1a1a/ff3e3e?text=Seu+Post',
+                title: title,
+                description: description,
+                likes: 0,
+                comments: 0,
+                liked: false,
+                timestamp: Date.now()
+            };
+            
+            POSTS.unshift(newPost);
+            saveToStorage(STORAGE_KEYS.POSTS, POSTS);
+            renderFeed();
+            updateProfileStats();
+            closeCreatePostModal();
+            showToast('✅ Post publicado com sucesso!');
+        }
+
+        // ========== PROFILE ==========
         function renderProfileGallery() {
             const grid = document.getElementById('profileGrid');
-            const carImages = [
-                'bmw.jpg',
-                'porsche.jpg',
-                'civic.jpg',
-                'bmw.jpg',
-                'porsche.jpg',
-                'civic.jpg'
-            ];
-
-            grid.innerHTML = carImages.map((img, i) => `
+            const userPosts = POSTS.filter(p => p.user === "Você");
+            
+            if (userPosts.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--color-text-secondary);">
+                        <i class="fas fa-camera" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                        <p>Você ainda não tem posts</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            grid.innerHTML = userPosts.slice(0, 6).map((post, i) => `
                 <div class="post-grid-item">
-                    <img src="${img}" alt="Veículo ${i+1}" onerror="this.src='https://via.placeholder.com/300x300?text=Carro+${i+1}'">
+                    <img src="${post.image}" alt="Post ${i+1}" onerror="this.src='https://via.placeholder.com/300x300?text=Post'">
+                    <div class="post-grid-overlay">
+                        <div class="post-grid-stat">                            <i class="fas fa-heart"></i> ${post.likes}
+                        </div>
+                        <div class="post-grid-stat">
+                            <i class="fas fa-comment"></i> ${post.comments}
+                        </div>
+                    </div>
                 </div>
             `).join('');
         }
 
+        function updateProfileStats() {
+            const userPosts = POSTS.filter(p => p.user === "Você");
+            document.getElementById('statPosts').textContent = userPosts.length;
+        }
+
         function shareProfile() {
             if (navigator.share) {
-                navigator.share({ title: 'Meu Perfil', text: 'Confira meu perfil no AutoConnect!', url: window.location.href });
+                navigator.share({ 
+                    title: 'Meu Perfil', 
+                    text: 'Confira meu perfil no AutoConnect!', 
+                    url: window.location.href 
+                });
             }
         }
 
-        // ========== MAP ========== 
+        // ========== MAP ==========
         function initMap() {
             console.log('🗺️ Inicializando mapa...');
             if (APP.map) {
@@ -1319,14 +2042,12 @@
             
             APP.map = L.map('map').setView([APP.userLocation.lat, APP.userLocation.lng], 13);
             
-            // Use CartoDB que não tem bloqueio
             L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
                 attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
                 subdomains: 'abcd',
                 maxZoom: 19
             }).addTo(APP.map);
 
-            // User marker padrão
             L.circleMarker([APP.userLocation.lat, APP.userLocation.lng], {
                 radius: 10,
                 fillColor: '#00d4ff',
@@ -1335,18 +2056,96 @@
                 opacity: 1,
                 fillOpacity: 0.8
             }).addTo(APP.map).bindPopup('📍 Você está aqui');
-            
-            APP.mapInitialized = true;
+                        APP.mapInitialized = true;
             console.log('✅ Mapa inicializado');
         }
 
-        function addMechanicMarkers() {
-            // Alias para a função que adiciona markers
-            addMechanicsMarkers();
+        function requestLocation() {
+            if (APP.locationRequested) {
+                console.log('⏳ Localização já foi solicitada');
+                return;
+            }
+            
+            APP.locationRequested = true;
+            
+            if (navigator.geolocation) {
+                showToast('📍 Detectando sua localização...');
+                navigator.geolocation.getCurrentPosition(
+                    pos => {
+                        const newLat = pos.coords.latitude;
+                        const newLng = pos.coords.longitude;
+                        console.log('✅ GPS funcionando! Lat:', newLat, 'Lng:', newLng);
+                        
+                        APP.userLocation = { lat: newLat, lng: newLng };
+                                                if (APP.map) {
+                            const userMarkers = [];
+                            APP.map.eachLayer(layer => {
+                                if (layer instanceof L.CircleMarker) {
+                                    userMarkers.push(layer);
+                                }
+                            });
+                            userMarkers.forEach(m => APP.map.removeLayer(m));
+                            
+                            APP.map.setView([newLat, newLng], 15);
+                            
+                            L.circleMarker([newLat, newLng], {
+                                radius: 10,
+                                fillColor: '#00d4ff',
+                                color: '#fff',
+                                weight: 3,
+                                opacity: 1,
+                                fillOpacity: 0.8
+                            }).addTo(APP.map).bindPopup('📍 Você está aqui');
+                        }
+                        
+                        showToast('✅ Localização obtida com sucesso!');
+                        
+                        setTimeout(() => {
+                            console.log('🔍 Buscando oficinas para:', newLat, newLng);
+                            fetchRealMechanics(newLat, newLng);
+                        }, 500);
+                    },
+                    error => {
+                        console.warn('❌ Erro no GPS:', error.code, error.message);
+                        
+                        if (error.code === 1) {
+                            showToast('⚠️ Permissão negada. Usando São Paulo como padrão...');
+                        } else if (error.code === 2) {
+                            showToast('⚠️ Posição indisponível. Usando São Paulo como padrão...');
+                        } else {
+                            showToast('⚠️ Erro no GPS. Usando São Paulo como padrão...');
+                        }
+                        
+                        const defaultLat = -23.5505;
+                        const defaultLng = -46.6333;
+                        APP.userLocation = { lat: defaultLat, lng: defaultLng };
+                        
+                        if (APP.map) {
+                            APP.map.setView([defaultLat, defaultLng], 13);
+                        }
+                        
+                        console.log('🔍 Buscando oficinas para SP padrão');
+                        fetchRealMechanics(defaultLat, defaultLng);
+                    },                    { 
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    }
+                );
+            } else {
+                console.warn('❌ Geolocalização não suportada');
+                showToast('⚠️ Seu navegador não suporta geolocalização');
+                const defaultLat = -23.5505;
+                const defaultLng = -46.6333;
+                APP.userLocation = { lat: defaultLat, lng: defaultLng };
+                fetchRealMechanics(defaultLat, defaultLng);
+            }
         }
 
+        // ========== BUSCA DE OFICINAS (VERSÃO MELHORADA) ==========
+
         function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Raio da Terra em km
+            const R = 6371;
             const dLat = (lat2 - lat1) * Math.PI / 180;
             const dLon = (lon2 - lon1) * Math.PI / 180;
             const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
@@ -1356,9 +2155,56 @@
             return R * c;
         }
 
+        function formatPhone(phone) {
+            if (!phone) return "não informado";
+            const cleaned = phone.replace(/\D/g, '');
+            if (cleaned.length === 11) {
+                return `(${cleaned.slice(0,2)}) ${cleaned.slice(2,7)}-${cleaned.slice(7)}`;
+            } else if (cleaned.length === 10) {
+                return `(${cleaned.slice(0,2)}) ${cleaned.slice(2,6)}-${cleaned.slice(6)}`;
+            }
+            return phone;
+        }
+
+        function formatAddress(tags) {
+            const parts = [];
+            if (tags['addr:street']) {
+                let addr = tags['addr:street'];
+                if (tags['addr:housenumber']) addr += `, ${tags['addr:housenumber']}`;
+                parts.push(addr);
+            }
+            if (tags['addr:neighbourhood']) parts.push(tags['addr:neighbourhood']);
+            if (tags['addr:suburb']) parts.push(tags['addr:suburb']);
+            if (tags['addr:city']) parts.push(tags['addr:city']);
+            if (tags['addr:state']) parts.push(tags['addr:state']);
+            return parts.length > 0 ? parts.join(', ') : null;
+        }
+
+        function formatOpeningHours(hours) {
+            if (!hours) return null;
+            const simple = hours.replace(/Mo-Fr/g, 'Seg-Sex')
+                                .replace(/Sa-Su/g, 'Sáb-Dom')
+                                .replace(/Mo-Sa/g, 'Seg-Sáb')
+                                .replace(/Mo-Su/g, 'Seg-Dom');
+            return simple;
+        }
+
+        function getServiceType(tags) {
+            const types = [];
+            if (tags['service:vehicle:car']) types.push('Carros');
+            if (tags['service:vehicle:motorcycle']) types.push('Motos');
+            if (tags['service:vehicle:truck']) types.push('Caminhões');
+            if (tags['service:vehicle:bicycle']) types.push('Bicicletas');
+            if (tags['shop'] === 'car_parts') types.push('Peças');
+            if (tags['shop'] === 'car') types.push('Concessionária');
+            if (tags['amenity'] === 'fuel') types.push('Posto');
+            if (tags['amenity'] === 'car_wash') types.push('Lava-jato');
+            if (tags['amenity'] === 'car_rental') types.push('Aluguel');
+            return types.length > 0 ? types.join(', ') : 'Oficina/Mecânica';
+        }
+
         async function fetchRealMechanics(lat, lng) {
             try {
-                // Evita múltiplas requisições simultâneas
                 if (APP.mechanicsSearching) {
                     console.log('⏳ Busca de mecânicas já em andamento...');
                     return;
@@ -1366,17 +2212,21 @@
                 
                 APP.mechanicsSearching = true;
                 setMechanicsLoading(true);
-                showToast('🔍 Buscando oficinas reais na sua região...');
+                showToast('🔍 Buscando oficinas na sua região...');
                 
-                // Tenta Google Places API primeiro (requer API key)
-                const googleSuccess = await fetchGooglePlacesMechanics(lat, lng);
-                if (googleSuccess) {
+                const overpassSuccess = await fetchOverpassMechanics(lat, lng);
+                if (overpassSuccess && MECHANICS.length > 0) {
                     APP.mechanicsSearching = false;
                     return;
                 }
                 
-                // Fallback: Tenta Overpass API
-                await fetchOverpassMechanics(lat, lng);
+                const overpassWide = await fetchOverpassMechanicsWide(lat, lng);
+                if (overpassWide && MECHANICS.length > 0) {
+                    APP.mechanicsSearching = false;
+                    return;
+                }
+                
+                await fetchNominatimMechanics(lat, lng);
                 APP.mechanicsSearching = false;
             } catch (error) {
                 console.error('Erro ao buscar mecânicas:', error);
@@ -1387,77 +2237,47 @@
             }
         }
 
-        async function fetchGooglePlacesMechanics(lat, lng) {
-            try {
-                // INSTRUÇÕES: Para usar Google Places API (mais preciso):
-                // 1. Acesse: https://console.cloud.google.com/
-                // 2. Crie um projeto e ative Places API
-                // 3. Gere uma API key
-                // 4. Substitua 'YOUR_GOOGLE_PLACES_API_KEY_HERE' pela sua chave abaixo
-                const apiKey = 'YOUR_GOOGLE_PLACES_API_KEY_HERE';
-                
-                if (apiKey === 'YOUR_GOOGLE_PLACES_API_KEY_HERE') {
-                    return false; // Sem chave, usa Overpass API automaticamente
-                }
-
-                const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=5000&keyword=car_repair&key=${apiKey}`;
-                const response = await fetch(url);
-                const data = await response.json();
-
-                if (data.results && data.results.length > 0) {
-                    MECHANICS = data.results.slice(0, 10).map(place => ({
-                        name: place.name,
-                        lat: place.geometry.location.lat,
-                        lon: place.geometry.location.lng,
-                        distance: calculateDistance(lat, lng, place.geometry.location.lat, place.geometry.location.lng).toFixed(1),
-                        phone: place.formatted_phone_number || 'Não informado',
-                        rating: place.rating || 'N/A',
-                        type: 'Oficina Google Places'
-                    }));
-
-                    renderMechanics();
-                    addMechanicsMarkers();
-                    showToast(`✅ ${MECHANICS.length} oficinas encontradas (Google Places)!`);
-                    return true;
-                }
-                return false;
-            } catch (error) {
-                console.error('Erro Google Places:', error);
-                return false;
-            }
-        }
-
         async function fetchOverpassMechanics(lat, lng) {
             try {
-                console.log('🔍 Iniciando busca Overpass para:', lat, lng);
+                console.log('🔍 Overpass: busca precisa (raio ~10km)');
                 
-                const query1 = `
-                    [out:json][timeout:15][bbox:${lat-0.1},${lng-0.1},${lat+0.1},${lng+0.1}];
+                const query = `
+                    [out:json][timeout:20][bbox:${lat-0.08},${lng-0.08},${lat+0.08},${lng+0.08}];
                     (
                         node["shop"="car_repair"];
+                        node["shop"="car_parts"];
+                        node["shop"="car"];
+                        node["shop"="tyres"];
                         node["amenity"="car_repair"];
-                        node["shop"="auto_repair"];
+                        node["amenity"="car_wash"];
+                        node["amenity"="fuel"];
+                        node["amenity"="car_rental"];
+                        node["craft"="car_repair"];
                         way["shop"="car_repair"];
+                        way["shop"="car_parts"];
+                        way["shop"="car"];
                         way["amenity"="car_repair"];
+                        way["amenity"="car_wash"];
+                        way["craft"="car_repair"];
                     );
-                    out center;
+                    out body;
+                    >;
+                    out skel qt;
                 `;
                 
-                console.log('📡 Enviando query ao Overpass...');
-                const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query1)}`;
+                const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
                 
                 let response;
                 try {
                     response = await Promise.race([
                         fetch(url),
                         new Promise((_, reject) => 
-                            setTimeout(() => reject(new Error('Timeout')), 12000)
+                            setTimeout(() => reject(new Error('Timeout')), 15000)
                         )
                     ]);
                 } catch (timeoutError) {
-                    console.warn('⏱️ Overpass timeout, tentando Nominatim...');
-                    await fetchNominatimMechanics(lat, lng);
-                    return;
+                    console.warn('⏱️ Overpass timeout');
+                    return false;
                 }
                 
                 if (!response.ok) {
@@ -1465,67 +2285,160 @@
                 }
                 
                 const data = await response.json();
-                console.log('📦 Resposta Overpass:', data.elements?.length || 0, 'elementos');
+                console.log('📦 Overpass retornou:', data.elements?.length || 0, 'elementos');
                 
-                if (data.elements && data.elements.length > 0) {
-                    MECHANICS = [];
-                    
-                    data.elements.forEach(element => {
-                        let elemLat, elemLon;
-                        
-                        if (element.lat !== undefined && element.lon !== undefined) {
-                            elemLat = element.lat;
-                            elemLon = element.lon;
-                        } else if (element.center) {
-                            elemLat = element.center.lat;
-                            elemLon = element.center.lon;
-                        }
-                        
-                        if (elemLat && elemLon) {
-                            const distance = calculateDistance(lat, lng, elemLat, elemLon);
-                            
-                            if (distance <= 10) {
-                                MECHANICS.push({
-                                    name: element.tags?.name || "Oficina/Garagem",
-                                    lat: elemLat,
-                                    lon: elemLon,
-                                    distance: distance.toFixed(1),
-                                    phone: element.tags?.phone || "não informado",
-                                    website: element.tags?.website || null,
-                                    type: element.tags?.service || "Oficina/Mecânica"
-                                });
-                            }
-                        }
-                    });
-                    
-                    MECHANICS.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
-                    MECHANICS = MECHANICS.slice(0, 15);
-                    
-                    if (MECHANICS.length > 0) {
-                        console.log('✅ Encontradas', MECHANICS.length, 'mecânicas');
-                        renderMechanics();
-                        addMechanicsMarkers();
-                        showToast(`✅ ${MECHANICS.length} oficinas encontradas!`);
-                    } else {
-                        console.log('ℹ️ Sem resultados no raio');
-                        await fetchNominatimMechanics(lat, lng);
-                    }
-                } else {
-                    console.log('⚠️ Overpass sem resultados, tenta Nominatim');
-                    await fetchNominatimMechanics(lat, lng);
+                if (!data.elements || data.elements.length === 0) {
+                    return false;
                 }
+                
+                MECHANICS = [];
+                
+                data.elements.forEach(element => {
+                    if (element.type !== 'node' || !element.tags) return;
+                    
+                    const elemLat = element.lat;
+                    const elemLon = element.lon;
+                    
+                    if (!elemLat || !elemLon) return;
+                    
+                    const distance = calculateDistance(lat, lng, elemLat, elemLon);
+                    
+                    if (distance > 15) return;
+                    
+                    const tags = element.tags;
+                    const address = formatAddress(tags);
+                    const phone = formatPhone(tags.phone || tags['contact:phone']);
+                    const website = tags.website || tags['contact:website'] || null;
+                    const openingHours = formatOpeningHours(tags.opening_hours);
+                    const serviceType = getServiceType(tags);
+                    
+                    MECHANICS.push({
+                        name: tags.name || tags.brand || "Oficina/Garagem",
+                        lat: elemLat,
+                        lon: elemLon,
+                        distance: distance.toFixed(1),
+                        phone: phone,
+                        website: website,
+                        address: address,
+                        openingHours: openingHours,
+                        type: serviceType,
+                        rating: tags.stars || null
+                    });
+                });
+                
+                MECHANICS.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+                MECHANICS = MECHANICS.slice(0, 20);
+                
+                if (MECHANICS.length > 0) {
+                    console.log('✅ Overpass encontrou', MECHANICS.length, 'estabelecimentos');
+                    renderMechanics();
+                    addMechanicsMarkers();
+                    showToast(`✅ ${MECHANICS.length} estabelecimentos encontrados!`);
+                    return true;
+                }
+                
+                return false;
             } catch (error) {
                 console.error('❌ Erro Overpass:', error);
-                await fetchNominatimMechanics(lat, lng);
+                return false;
+            }
+        }
+
+        async function fetchOverpassMechanicsWide(lat, lng) {
+            try {
+                console.log('🔍 Overpass: busca ampla (raio ~25km)');
+                
+                const query = `
+                    [out:json][timeout:20][bbox:${lat-0.2},${lng-0.2},${lat+0.2},${lng+0.2}];
+                    (
+                        node["shop"="car_repair"];
+                        node["amenity"="car_repair"];
+                        node["craft"="car_repair"];
+                        way["shop"="car_repair"];
+                        way["amenity"="car_repair"];
+                    );
+                    out center;
+                `;
+                
+                const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
+                
+                let response;
+                try {
+                    response = await Promise.race([
+                        fetch(url),
+                        new Promise((_, reject) => 
+                            setTimeout(() => reject(new Error('Timeout')), 15000)
+                        )
+                    ]);
+                } catch (timeoutError) {
+                    console.warn('⏱️ Overpass wide timeout');
+                    return false;
+                }
+                
+                if (!response.ok) return false;
+                
+                const data = await response.json();
+                
+                if (!data.elements || data.elements.length === 0) return false;
+                
+                MECHANICS = [];
+                
+                data.elements.forEach(element => {
+                    let elemLat, elemLon;
+                    
+                    if (element.lat !== undefined && element.lon !== undefined) {
+                        elemLat = element.lat;
+                        elemLon = element.lon;
+                    } else if (element.center) {
+                        elemLat = element.center.lat;
+                        elemLon = element.center.lon;
+                    }
+                    
+                    if (!elemLat || !elemLon) return;
+                    
+                    const distance = calculateDistance(lat, lng, elemLat, elemLon);
+                    if (distance > 25) return;
+                    
+                    const tags = element.tags || {};
+                    
+                    MECHANICS.push({
+                        name: tags.name || tags.brand || "Oficina/Garagem",
+                        lat: elemLat,
+                        lon: elemLon,
+                        distance: distance.toFixed(1),
+                        phone: formatPhone(tags.phone || tags['contact:phone']),
+                        website: tags.website || tags['contact:website'] || null,
+                        address: formatAddress(tags),
+                        openingHours: formatOpeningHours(tags.opening_hours),
+                        type: getServiceType(tags),
+                        rating: tags.stars || null
+                    });
+                });
+                
+                MECHANICS.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+                MECHANICS = MECHANICS.slice(0, 20);
+                
+                if (MECHANICS.length > 0) {
+                    console.log('✅ Overpass wide encontrou', MECHANICS.length);
+                    renderMechanics();
+                    addMechanicsMarkers();
+                    showToast(`✅ ${MECHANICS.length} estabelecimentos encontrados!`);
+                    return true;
+                }
+                
+                return false;
+            } catch (error) {
+                console.error('❌ Erro Overpass wide:', error);
+                return false;
             }
         }
 
         async function fetchNominatimMechanics(lat, lng) {
             try {
-                console.log('🔍 Tentando busca por Nominatim...');
+                console.log('🔍 Tentando Nominatim...');
                 
-                const bbox = `${lng-0.08},${lat-0.08},${lng+0.08},${lat+0.08}`;
-                const url = `https://nominatim.openstreetmap.org/search?q=oficina+mecanica&format=json&bounded=1&viewbox=${bbox}&limit=20&accept-language=pt-BR`;
+                const bbox = `${lng-0.15},${lat-0.15},${lng+0.15},${lat+0.15}`;
+                const url = `https://nominatim.openstreetmap.org/search?q=mecanica+automotiva&format=json&bounded=1&viewbox=${bbox}&limit=20&accept-language=pt-BR`;
                 
                 let response;
                 try {
@@ -1537,7 +2450,7 @@
                             }
                         }),
                         new Promise((_, reject) => 
-                            setTimeout(() => reject(new Error('Timeout')), 8000)
+                            setTimeout(() => reject(new Error('Timeout')), 10000)
                         )
                     ]);
                 } catch (timeoutError) {
@@ -1557,25 +2470,27 @@
                         lon: parseFloat(place.lon),
                         distance: calculateDistance(lat, lng, parseFloat(place.lat), parseFloat(place.lon)).toFixed(1),
                         phone: "não informado",
-                        type: place.type
-                    })).filter(m => m.distance <= 10)
+                        website: null,
+                        address: place.display_name || null,
+                        openingHours: null,
+                        type: place.type || 'Oficina',
+                        rating: null
+                    })).filter(m => m.distance <= 25)
                     .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
                     .slice(0, 15);
                     
                     if (MECHANICS.length > 0) {
-                        console.log('✅ Nominatim encontrou', MECHANICS.length, 'resultados');
+                        console.log('✅ Nominatim encontrou', MECHANICS.length);
                         renderMechanics();
                         addMechanicsMarkers();
-                        showToast(`✅ ${MECHANICS.length} lojas encontradas!`);
+                        showToast(`✅ ${MECHANICS.length} estabelecimentos encontrados!`);
                     } else {
-                        console.log('ℹ️ Nominatim sem resultados próximos');
-                        showToast('ℹ️ Nenhuma oficina encontrada em sua região');
+                        showToast('⚠️ Nenhum estabelecimento encontrado próximo');
                         MECHANICS = [];
                         renderMechanics();
                     }
                 } else {
-                    console.log('⚠️ Nominatim sem resposta');
-                    showToast('⚠️ Não conseguimos encontrar oficinas. Tente em outra região.');
+                    showToast('⚠️ Nenhum resultado encontrado. Tente em outra região.');
                     MECHANICS = [];
                     renderMechanics();
                 }
@@ -1590,15 +2505,26 @@
         function addMechanicsMarkers() {
             if (!APP.map) return;
             
-            // Remove markers antigos de mecânicas (exceto o marker do usuário)
             APP.map.eachLayer(layer => {
-                if (layer instanceof L.Marker && layer.getPopup() && layer.getPopup().getContent().includes('Oficina')) {
+                if (layer instanceof L.Marker) {
                     APP.map.removeLayer(layer);
                 }
             });
             
             MECHANICS.forEach(m => {
-                const marker = L.marker([m.lat, m.lon], {
+                const popupContent = `
+                    <div style="min-width:200px;">
+                        <strong style="font-size:14px;">🔧 ${m.name}</strong><br>
+                        <span style="color:#00d4ff;font-weight:600;">📍 ${m.distance}km de você</span><br>
+                        <span style="color:#666;font-size:12px;">${m.type}</span>
+                        ${m.address ? `<br><span style="font-size:12px;">📋 ${m.address}</span>` : ''}
+                        ${m.phone !== "não informado" ? `<br><a href="tel:${m.phone.replace(/\D/g,'')}" style="color:#00d4ff;text-decoration:none;">📱 ${m.phone}</a>` : ''}
+                        ${m.website ? `<br><a href="${m.website}" target="_blank" style="color:#00d4ff;font-size:12px;">🌐 Site</a>` : ''}
+                        ${m.openingHours ? `<br><span style="font-size:11px;color:#666;">🕐 ${m.openingHours}</span>` : ''}
+                    </div>
+                `;
+                
+                L.marker([m.lat, m.lon], {
                     icon: L.icon({
                         iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
                         shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -1607,107 +2533,8 @@
                         popupAnchor: [1, -34],
                         shadowSize: [41, 41]
                     })
-                }).addTo(APP.map).bindPopup(`
-                    <strong>🔧 ${m.name}</strong><br>
-                    📍 ${m.distance}km<br>
-                    ${m.phone !== "não informado" ? `📱 ${m.phone}` : ""}
-                    ${m.rating ? `<br>⭐ ${m.rating}` : ''}
-                `);
+                }).addTo(APP.map).bindPopup(popupContent);
             });
-        }
-
-        function requestLocation() {
-            if (APP.locationRequested) {
-                console.log('⏳ Localização já foi solicitada');
-                return;
-            }
-            
-            APP.locationRequested = true;
-            
-            if (navigator.geolocation) {
-                showToast('📍 Detectando sua localização...');
-                navigator.geolocation.getCurrentPosition(
-                    pos => {
-                        const newLat = pos.coords.latitude;
-                        const newLng = pos.coords.longitude;
-                        console.log('✅ GPS funcionando! Lat:', newLat, 'Lng:', newLng);
-                        
-                        APP.userLocation = { 
-                            lat: newLat, 
-                            lng: newLng 
-                        };
-                        
-                        if (APP.map) {
-                            // Remove only the user's CircleMarker, keep other markers
-                            const userMarkers = [];
-                            APP.map.eachLayer(layer => {
-                                if (layer instanceof L.CircleMarker) {
-                                    userMarkers.push(layer);
-                                }
-                            });
-                            userMarkers.forEach(m => APP.map.removeLayer(m));
-                            
-                            // Centra no novo local
-                            APP.map.setView([newLat, newLng], 15);
-                            
-                            // Adiciona marker novo
-                            L.circleMarker([newLat, newLng], {
-                                radius: 10,
-                                fillColor: '#00d4ff',
-                                color: '#fff',
-                                weight: 3,
-                                opacity: 1,
-                                fillOpacity: 0.8
-                            }).addTo(APP.map).bindPopup('📍 Você está aqui');
-                        }
-                        
-                        showToast('✅ Localização obtida com sucesso!');
-                        
-                        // Busca oficinas reais na nova localização
-                        setTimeout(() => {
-                            console.log('🔍 Buscando oficinas para:', newLat, newLng);
-                            fetchRealMechanics(newLat, newLng);
-                        }, 500);
-                    },
-                    error => {
-                        console.warn('❌ Erro no GPS:', error.code, error.message);
-                        
-                        if (error.code === 1) {
-                            showToast('⚠️ Permissão negada. Usando São Paulo como padrão...');
-                        } else if (error.code === 2) {
-                            showToast('⚠️ Posição indisponível. Usando São Paulo como padrão...');
-                        } else {
-                            showToast('⚠️ Erro no GPS. Usando São Paulo como padrão...');
-                        }
-                        
-                        // Usa São Paulo como fallback
-                        const defaultLat = -23.5505;
-                        const defaultLng = -46.6333;
-                        APP.userLocation = { lat: defaultLat, lng: defaultLng };
-                        
-                        if (APP.map) {
-                            APP.map.setView([defaultLat, defaultLng], 13);
-                        }
-                        
-                        // Busca uma única vez com fallback
-                        console.log('🔍 Buscando oficinas para SP padrão');
-                        fetchRealMechanics(defaultLat, defaultLng);
-                    },
-                    { 
-                        enableHighAccuracy: true,
-                        timeout: 10000,
-                        maximumAge: 0
-                    }
-                );
-            } else {
-                console.warn('❌ Geolocalização não suportada');
-                showToast('⚠️ Seu navegador não suporta geolocalização');
-                // Usa fallback sem GPS
-                const defaultLat = -23.5505;
-                const defaultLng = -46.6333;
-                APP.userLocation = { lat: defaultLat, lng: defaultLng };
-                fetchRealMechanics(defaultLat, defaultLng);
-            }
         }
 
         function setMechanicsLoading(loading) {
@@ -1716,7 +2543,7 @@
                 list.innerHTML = `
                     <div style="color: var(--color-text-secondary); text-align: center; padding: 2rem 1rem;">
                         <div style="font-size:2rem;margin-bottom:0.75rem;">⚙️</div>
-                        <div style="font-size:var(--font-size-sm);font-weight:600;color:var(--brand-accent);margin-bottom:0.5rem;">Buscando oficinas...</div>
+                        <div style="font-size:var(--font-size-sm);font-weight:600;color:var(--brand-accent);margin-bottom:0.5rem;">Buscando estabelecimentos...</div>
                         <div style="width:100%;height:4px;background:var(--color-border-secondary);border-radius:2px;overflow:hidden;">
                             <div style="height:100%;width:40%;background:var(--gradient-primary);border-radius:2px;animation:loadBar 1.2s ease-in-out infinite;"></div>
                         </div>
@@ -1732,32 +2559,40 @@
                 list.innerHTML = `
                     <div style="color: var(--color-text-secondary); text-align: center; padding: 2rem 1rem;">
                         <div style="font-size:2rem;margin-bottom:0.75rem;">🔍</div>
-                        <div style="font-size:var(--font-size-sm);font-weight:600;margin-bottom:0.5rem;">Nenhuma oficina encontrada</div>
-                        <small>Tente clicar em "Atualizar minha localização" ou verifique sua conexão.</small>
+                        <div style="font-size:var(--font-size-sm);font-weight:600;margin-bottom:0.5rem;">Nenhum estabelecimento encontrado</div>
+                        <small>Tente clicar em "Atualizar localização" ou verifique sua conexão.</small>
                     </div>
                 `;
                 return;
             }
             
             list.innerHTML = MECHANICS.map((m, i) => `
-                <div class="mechanic-item">
+                <div class="mechanic-item" onclick="focusMechanic(${i})">
                     <div class="mechanic-name">🔧 ${m.name}</div>
+                    <div style="font-size:11px;color:var(--brand-accent);margin-bottom:4px;font-weight:500;">${m.type}</div>
                     <div class="mechanic-info">
-                        <span class="mechanic-distance">📍 ${m.distance}km de você</span>
+                        <span class="mechanic-distance">📍 ${m.distance}km</span>
                         ${m.rating ? `<span class="mechanic-rating">⭐ ${m.rating}</span>` : ''}
                     </div>
-                    <div class="mechanic-info">
-                        <i class="fas fa-phone" style="color: var(--brand-accent); margin-right: 0.5rem;"></i>
-                        <span>${m.phone}</span>
-                    </div>
+                    ${m.address ? `<div class="mechanic-info" style="font-size:11px;"><i class="fas fa-map-marker-alt" style="color:var(--brand-accent);margin-right:4px;"></i>${m.address}</div>` : ''}
+                    ${m.phone !== "não informado" ? `<div class="mechanic-info"><i class="fas fa-phone" style="color:var(--brand-accent);margin-right:4px;"></i><a href="tel:${m.phone.replace(/\D/g,'')}" style="color:var(--color-text-secondary);text-decoration:none;">${m.phone}</a></div>` : ''}
+                    ${m.openingHours ? `<div class="mechanic-info" style="font-size:11px;"><i class="fas fa-clock" style="color:var(--brand-accent);margin-right:4px;"></i>${m.openingHours}</div>` : ''}
+                    ${m.website ? `<div class="mechanic-info" style="font-size:11px;"><i class="fas fa-globe" style="color:var(--brand-accent);margin-right:4px;"></i><a href="${m.website}" target="_blank" style="color:var(--color-text-secondary);text-decoration:none;">Ver site</a></div>` : ''}
                 </div>
             `).join('');
+        }
+
+        function focusMechanic(index) {
+            const m = MECHANICS[index];
+            if (APP.map && m.lat && m.lon) {
+                APP.map.setView([m.lat, m.lon], 16);
+                showToast(`📍 ${m.name}`);
+            }
         }
 
         function openMobileMechanics() {
             const sheet = document.getElementById('mobileSheet');
             const mobileList = document.getElementById('mobileSheetList');
-            // Espelha o conteúdo do painel desktop
             mobileList.innerHTML = document.getElementById('mechanicsList').innerHTML;
             sheet.style.display = 'block';
         }
@@ -1766,8 +2601,11 @@
             document.getElementById('mobileSheet').style.display = 'none';
         }
 
-        // ========== UTILITIES ========== 
+        // ========== UTILITIES ==========
         function showToast(message) {
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) existingToast.remove();
+            
             const toast = document.createElement('div');
             toast.className = 'toast';
             toast.textContent = message;
@@ -1776,25 +2614,31 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
-        // Debug info
+        // Debug functions
         function logDebugInfo() {
             console.group('🔍 DEBUG INFO AutoConnect');
             console.log('Localização atual:', APP.userLocation);
             console.log('Mecânicas encontradas:', MECHANICS.length);
             console.table(MECHANICS);
             console.log('Mapa inicializado:', APP.map ? 'Sim' : 'Não');
+            console.log('Posts salvos:', POSTS.length);
+            console.log('Stories salvos:', STORIES.length);
             console.groupEnd();
         }
 
-        // Disponível globalmente para debug manual
         window.debugAutoConnect = logDebugInfo;
         window.testGPS = () => requestLocation();
         window.testSearch = () => fetchRealMechanics(APP.userLocation.lat, APP.userLocation.lng);
+        window.clearAllData = () => {
+            localStorage.clear();
+            location.reload();
+        };
         
         console.log('💡 Para debug, use no console:');
         console.log('  debugAutoConnect() - Ver informações de debug');
         console.log('  testGPS() - Testar localização');
         console.log('  testSearch() - Testar busca de oficinas');
+        console.log('  clearAllData() - Limpar todos os dados salvos');
     </script>
 </body>
 </html>
