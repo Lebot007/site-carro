@@ -2238,112 +2238,121 @@
         }
 
         async function fetchOverpassMechanics(lat, lng) {
-            try {
-                console.log('🔍 Overpass: busca precisa (raio ~10km)');
-                
-                const query = `
-                    [out:json][timeout:20][bbox:${lat-0.08},${lng-0.08},${lat+0.08},${lng+0.08}];
-                    (
-                        node["shop"="car_repair"];
-                        node["shop"="car_parts"];
-                        node["shop"="car"];
-                        node["shop"="tyres"];
-                        node["amenity"="car_repair"];
-                        node["amenity"="car_wash"];
-                        node["amenity"="fuel"];
-                        node["amenity"="car_rental"];
-                        node["craft"="car_repair"];
-                        way["shop"="car_repair"];
-                        way["shop"="car_parts"];
-                        way["shop"="car"];
-                        way["amenity"="car_repair"];
-                        way["amenity"="car_wash"];
-                        way["craft"="car_repair"];
-                    );
-                    out body;
-                    >;
-                    out skel qt;
-                `;
-                
-                const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
-                
-                let response;
-                try {
-                    response = await Promise.race([
-                        fetch(url),
-                        new Promise((_, reject) => 
-                            setTimeout(() => reject(new Error('Timeout')), 15000)
-                        )
-                    ]);
-                } catch (timeoutError) {
-                    console.warn('⏱️ Overpass timeout');
-                    return false;
-                }
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-                
-                const data = await response.json();
-                console.log('📦 Overpass retornou:', data.elements?.length || 0, 'elementos');
-                
-                if (!data.elements || data.elements.length === 0) {
-                    return false;
-                }
-                
-                MECHANICS = [];
-                
-                data.elements.forEach(element => {
-                    if (element.type !== 'node' || !element.tags) return;
-                    
-                    const elemLat = element.lat;
-                    const elemLon = element.lon;
-                    
-                    if (!elemLat || !elemLon) return;
-                    
-                    const distance = calculateDistance(lat, lng, elemLat, elemLon);
-                    
-                    if (distance > 15) return;
-                    
-                    const tags = element.tags;
-                    const address = formatAddress(tags);
-                    const phone = formatPhone(tags.phone || tags['contact:phone']);
-                    const website = tags.website || tags['contact:website'] || null;
-                    const openingHours = formatOpeningHours(tags.opening_hours);
-                    const serviceType = getServiceType(tags);
-                    
-                    MECHANICS.push({
-                        name: tags.name || tags.brand || "Oficina/Garagem",
-                        lat: elemLat,
-                        lon: elemLon,
-                        distance: distance.toFixed(1),
-                        phone: phone,
-                        website: website,
-                        address: address,
-                        openingHours: openingHours,
-                        type: serviceType,
-                        rating: tags.stars || null
-                    });
-                });
-                
-                MECHANICS.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
-                MECHANICS = MECHANICS.slice(0, 20);
-                
-                if (MECHANICS.length > 0) {
-                    console.log('✅ Overpass encontrou', MECHANICS.length, 'estabelecimentos');
-                    renderMechanics();
-                    addMechanicsMarkers();
-                    showToast(`✅ ${MECHANICS.length} estabelecimentos encontrados!`);
-                    return true;
-                }
-                
-                return false;
-            } catch (error) {
-                console.error('❌ Erro Overpass:', error);
-                return false;
-            }
+    try {
+        console.log('🔍 Overpass: busca precisa (raio ~10km)');
+        
+        // ✅ CORREÇÃO 1: Query usa "out center" para funcionar com ways
+        const query = `
+            [out:json][timeout:25][bbox:${lat-0.08},${lng-0.08},${lat+0.08},${lng+0.08}];
+            (
+                node["shop"="car_repair"];
+                node["shop"="car_parts"];
+                node["shop"="car"];
+                node["shop"="tyres"];
+                node["amenity"="car_repair"];
+                node["amenity"="car_wash"];
+                node["amenity"="fuel"];
+                node["amenity"="car_rental"];
+                node["craft"="car_repair"];
+                way["shop"="car_repair"];
+                way["shop"="car_parts"];
+                way["shop"="car"];
+                way["amenity"="car_repair"];
+                way["amenity"="car_wash"];
+                way["craft"="car_repair"];
+            );
+            out center;
+        `;
+        
+        const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
+        
+        let response;
+        try {
+            response = await Promise.race([
+                fetch(url),
+                new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Timeout')), 20000)
+                )
+            ]);
+        } catch (timeoutError) {
+            console.warn('⏱️ Overpass timeout');
+            return false;
         }
-
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('📦 Overpass retornou:', data.elements?.length || 0, 'elementos');
+        
+        if (!data.elements || data.elements.length === 0) {
+            return false;
+        }
+        
+        MECHANICS = [];
+        
+        // ✅ CORREÇÃO 2: Aceita nodes E ways
+        data.elements.forEach(element => {
+            if (!element.tags) return;
+            
+            let elemLat, elemLon;
+            
+            // Node tem lat/lon direto
+            if (element.type === 'node') {
+                elemLat = element.lat;
+                elemLon = element.lon;
+            } 
+            // Way tem center.lat/center.lon
+            else if (element.type === 'way' && element.center) {
+                elemLat = element.center.lat;
+                elemLon = element.center.lon;
+            }
+            
+            if (!elemLat || !elemLon) return;
+            
+            const distance = calculateDistance(lat, lng, elemLat, elemLon);
+            
+            if (distance > 15) return;
+            
+            const tags = element.tags;
+            const address = formatAddress(tags);
+            const phone = formatPhone(tags.phone || tags['contact:phone']);
+            const website = tags.website || tags['contact:website'] || null;
+            const openingHours = formatOpeningHours(tags.opening_hours);
+            const serviceType = getServiceType(tags);
+            
+            MECHANICS.push({
+                name: tags.name || tags.brand || "Oficina/Garagem",
+                lat: elemLat,
+                lon: elemLon,
+                distance: distance.toFixed(1),
+                phone: phone,
+                website: website,
+                address: address,
+                openingHours: openingHours,
+                type: serviceType,
+                rating: tags.stars || null
+            });
+        });
+        
+        MECHANICS.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+        MECHANICS = MECHANICS.slice(0, 20);
+        
+        if (MECHANICS.length > 0) {
+            console.log('✅ Overpass encontrou', MECHANICS.length, 'estabelecimentos');
+            renderMechanics();
+            addMechanicsMarkers();
+            showToast(`✅ ${MECHANICS.length} estabelecimentos encontrados!`);
+            return true;
+        }
+        
+        return false;
+    } catch (error) {
+        console.error('❌ Erro Overpass:', error);
+        return false;
+    }
+}
         async function fetchOverpassMechanicsWide(lat, lng) {
             try {
                 console.log('🔍 Overpass: busca ampla (raio ~25km)');
@@ -2503,39 +2512,45 @@
         }
 
         function addMechanicsMarkers() {
-            if (!APP.map) return;
-            
-            APP.map.eachLayer(layer => {
-                if (layer instanceof L.Marker) {
-                    APP.map.removeLayer(layer);
-                }
-            });
-            
-            MECHANICS.forEach(m => {
-                const popupContent = `
-                    <div style="min-width:200px;">
-                        <strong style="font-size:14px;">🔧 ${m.name}</strong><br>
-                        <span style="color:#00d4ff;font-weight:600;">📍 ${m.distance}km de você</span><br>
-                        <span style="color:#666;font-size:12px;">${m.type}</span>
-                        ${m.address ? `<br><span style="font-size:12px;">📋 ${m.address}</span>` : ''}
-                        ${m.phone !== "não informado" ? `<br><a href="tel:${m.phone.replace(/\D/g,'')}" style="color:#00d4ff;text-decoration:none;">📱 ${m.phone}</a>` : ''}
-                        ${m.website ? `<br><a href="${m.website}" target="_blank" style="color:#00d4ff;font-size:12px;">🌐 Site</a>` : ''}
-                        ${m.openingHours ? `<br><span style="font-size:11px;color:#666;">🕐 ${m.openingHours}</span>` : ''}
-                    </div>
-                `;
-                
-                L.marker([m.lat, m.lon], {
-                    icon: L.icon({
-                        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-                        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                        iconSize: [25, 41],
-                        iconAnchor: [12, 41],
-                        popupAnchor: [1, -34],
-                        shadowSize: [41, 41]
-                    })
-                }).addTo(APP.map).bindPopup(popupContent);
-            });
+    if (!APP.map) return;
+    
+    // ✅ CORREÇÃO: Remove APENAS markers de oficinas (não o do usuário)
+    APP.map.eachLayer(layer => {
+        if (layer instanceof L.Marker && layer._isMechanicMarker) {
+            APP.map.removeLayer(layer);
         }
+    });
+    
+    console.log('📍 Adicionando', MECHANICS.length, 'marcadores no mapa');
+    
+    MECHANICS.forEach(m => {
+        const popupContent = `
+            <div style="min-width:200px;">
+                <strong style="font-size:14px;">🔧 ${m.name}</strong><br>
+                <span style="color:#00d4ff;font-weight:600;">📍 ${m.distance}km de você</span><br>
+                <span style="color:#666;font-size:12px;">${m.type}</span>
+                ${m.address ? `<br><span style="font-size:12px;">📋 ${m.address}</span>` : ''}
+                ${m.phone !== "não informado" ? `<br><a href="tel:${m.phone.replace(/\D/g,'')}" style="color:#00d4ff;text-decoration:none;">📱 ${m.phone}</a>` : ''}
+                ${m.website ? `<br><a href="${m.website}" target="_blank" style="color:#00d4ff;font-size:12px;">🌐 Site</a>` : ''}
+                ${m.openingHours ? `<br><span style="font-size:11px;color:#666;">🕐 ${m.openingHours}</span>` : ''}
+            </div>
+        `;
+        
+        // ✅ Marca como marker de oficina
+        const marker = L.marker([m.lat, m.lon], {
+            icon: L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            })
+        }).addTo(APP.map).bindPopup(popupContent);
+        
+        marker._isMechanicMarker = true;
+    });
+}
 
         function setMechanicsLoading(loading) {
             const list = document.getElementById('mechanicsList');
@@ -2582,11 +2597,22 @@
             `).join('');
         }
 
-        function focusMechanic(index) {
+                function focusMechanic(index) {
             const m = MECHANICS[index];
             if (APP.map && m.lat && m.lon) {
                 APP.map.setView([m.lat, m.lon], 16);
                 showToast(`📍 ${m.name}`);
+                
+                // ✅ Abre o popup do marcador correspondente
+                APP.map.eachLayer(layer => {
+                    if (layer instanceof L.Marker && layer._isMechanicMarker) {
+                        const latlng = layer.getLatLng();
+                        if (Math.abs(latlng.lat - m.lat) < 0.0001 && 
+                            Math.abs(latlng.lng - m.lon) < 0.0001) {
+                            layer.openPopup();
+                        }
+                    }
+                });
             }
         }
 
