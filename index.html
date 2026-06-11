@@ -7,18 +7,15 @@
     <meta name="description" content="AutoConnect - A maior comunidade automotiva do Brasil com GPS integrado">
     <title>AutoConnect | Rede Social Automotiva + GPS</title>
     
-    <!-- Preconnect for performance -->
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     
-    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <style>
         :root {
-            /* Colors */
             --color-bg-primary: #0a0a0a;
             --color-bg-secondary: #111111;
             --color-bg-tertiary: #1a1a1a;
@@ -29,7 +26,6 @@
             --color-border-primary: #222222;
             --color-border-secondary: #2a2a2a;
             
-            /* Brand Colors */
             --brand-primary: #ff3e3e;
             --brand-secondary: #ffa500;
             --brand-accent: #00d4ff;
@@ -37,17 +33,15 @@
             --brand-warning: #ffa500;
             --brand-danger: #ff4757;
             
-            /* Gradients */
             --gradient-primary: linear-gradient(135deg, #ff3e3e 0%, #ffa500 100%);
             --gradient-secondary: linear-gradient(135deg, #00d4ff 0%, #00ff88 100%);
             --gradient-dark: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
             
-            /* Shadows */
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
             --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
             --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
             --shadow-glow: 0 0 20px rgba(255, 62, 62, 0.3);
-                        /* Spacing */
+            
             --spacing-xs: 4px;
             --spacing-sm: 8px;
             --spacing-md: 16px;
@@ -55,14 +49,12 @@
             --spacing-xl: 32px;
             --spacing-2xl: 48px;
             
-            /* Border Radius */
             --radius-sm: 8px;
             --radius-md: 12px;
             --radius-lg: 16px;
             --radius-xl: 24px;
             --radius-full: 9999px;
             
-            /* Font Size */
             --font-size-xs: 0.75rem;
             --font-size-sm: 0.875rem;
             --font-size-base: 1rem;
@@ -72,10 +64,10 @@
             --font-size-2xl: 2rem;
             --font-size-3xl: 2.5rem;
             
-            /* Z-index */
             --z-modal: 400;
             --z-toast: 500;
             --z-fixed: 300;
+            --z-dropdown: 600;
         }
 
         *, *::before, *::after {
@@ -96,8 +88,10 @@
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
-        /* ========== SCROLLBAR ========== */
+
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -145,7 +139,8 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-decoration: none;            transition: transform 0.3s ease;
+            text-decoration: none;
+            transition: transform 0.3s ease;
         }
 
         .app-logo:hover {
@@ -194,7 +189,8 @@
             content: '';
             position: absolute;
             bottom: -12px;
-            left: 0;            right: 0;
+            left: 0;
+            right: 0;
             height: 3px;
             background: var(--brand-accent);
             border-radius: 2px;
@@ -228,7 +224,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ========== HOME VIEW (MAP + MECHANICS) ========== */
+        /* ========== HOME VIEW ========== */
         #homeView {
             display: none;
             grid-template-columns: 1fr 320px;
@@ -243,7 +239,8 @@
         #map {
             width: 100%;
             height: 100%;
-            z-index: 1;        }
+            z-index: 1;
+        }
 
         .mechanics-panel {
             background: var(--color-bg-card);
@@ -293,6 +290,7 @@
             gap: var(--spacing-xs);
             margin-bottom: var(--spacing-xs);
         }
+
         .mechanic-rating {
             color: var(--brand-warning);
         }
@@ -308,7 +306,6 @@
             background: var(--color-bg-primary);
         }
 
-        /* Stories */
         .stories-container {
             display: flex;
             gap: var(--spacing-md);
@@ -334,6 +331,7 @@
             flex-shrink: 0;
             min-width: 80px;
             transition: transform 0.3s ease;
+            position: relative;
         }
 
         .story:hover {
@@ -341,7 +339,8 @@
         }
 
         .story-avatar-wrapper {
-            position: relative;        }
+            position: relative;
+        }
 
         .story-avatar {
             width: 72px;
@@ -391,7 +390,38 @@
         .story:hover .add-story-plus {
             transform: scale(1.2) rotate(90deg);
         }
-        /* Create Post Button */
+
+        /* ========== DELETE BUTTON (STORY) ========== */
+        .story-delete-btn {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 22px;
+            height: 22px;
+            background: var(--brand-danger);
+            color: white;
+            border: 2px solid var(--color-bg-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.2s ease;
+            opacity: 0;
+        }
+
+        .story:hover .story-delete-btn {
+            opacity: 1;
+        }
+
+        .story-delete-btn:hover {
+            transform: scale(1.2);
+            background: #d32f2f;
+        }
+
+        /* ========== CREATE POST BUTTON ========== */
         .create-post-btn {
             max-width: 600px;
             margin: var(--spacing-lg) auto;
@@ -439,7 +469,8 @@
             font-size: var(--font-size-sm);
             display: flex;
             align-items: center;
-            gap: var(--spacing-xs);            transition: all 0.3s ease;
+            gap: var(--spacing-xs);
+            transition: all 0.3s ease;
         }
 
         .create-post-action:hover {
@@ -447,7 +478,7 @@
             color: var(--brand-accent);
         }
 
-        /* Feed */
+        /* ========== FEED ========== */
         .feed {
             max-width: 600px;
             margin: 0 auto;
@@ -464,6 +495,7 @@
             box-shadow: var(--shadow-md);
             transition: all 0.3s ease;
             animation: slideUp 0.5s ease;
+            position: relative;
         }
 
         @keyframes slideUp {
@@ -482,23 +514,29 @@
             gap: var(--spacing-md);
             padding: var(--spacing-md);
             border-bottom: 1px solid var(--color-border-secondary);
+            position: relative;
         }
 
         .post-avatar {
             width: 48px;
             height: 48px;
             border-radius: 50%;
-            object-fit: cover;            border: 2px solid var(--brand-accent);
+            object-fit: cover;
+            border: 2px solid var(--brand-accent);
         }
 
         .post-user-info {
             flex: 1;
+            min-width: 0;
         }
 
         .post-user-name {
             font-weight: 600;
             font-size: var(--font-size-base);
             color: var(--color-text-primary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .post-user-handle {
@@ -514,6 +552,12 @@
             padding: var(--spacing-sm);
             border-radius: var(--radius-md);
             transition: all 0.3s ease;
+            position: relative;
+            min-width: 40px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .post-menu-btn:hover {
@@ -521,12 +565,61 @@
             color: var(--color-text-primary);
         }
 
+        /* ========== POST DROPDOWN MENU ========== */
+        .post-dropdown {
+            position: absolute;
+            top: 100%;
+            right: var(--spacing-md);
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border-secondary);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            min-width: 160px;
+            z-index: var(--z-dropdown);
+            overflow: hidden;
+            animation: slideDown 0.2s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .post-dropdown-item {
+            padding: var(--spacing-md);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: var(--font-size-sm);
+            color: var(--color-text-primary);
+            transition: all 0.2s ease;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+        }
+
+        .post-dropdown-item:hover {
+            background: var(--color-bg-tertiary);
+        }
+
+        .post-dropdown-item.danger {
+            color: var(--brand-danger);
+        }
+
+        .post-dropdown-item.danger:hover {
+            background: rgba(255, 71, 87, 0.1);
+        }
+
         .post-image {
             width: 100%;
+            max-width: 100%;
             object-fit: cover;
             aspect-ratio: 1;
             cursor: pointer;
             transition: transform 0.3s ease;
+            display: block;
         }
 
         .post-image:hover {
@@ -537,10 +630,12 @@
             padding: var(--spacing-md);
         }
 
-        .post-title {            font-weight: 600;
+        .post-title {
+            font-weight: 600;
             font-size: var(--font-size-lg);
             margin-bottom: var(--spacing-sm);
             color: var(--color-text-primary);
+            word-wrap: break-word;
         }
 
         .post-description {
@@ -548,6 +643,7 @@
             color: var(--color-text-secondary);
             line-height: 1.6;
             margin-bottom: var(--spacing-md);
+            word-wrap: break-word;
         }
 
         .post-stats {
@@ -558,6 +654,7 @@
             margin-bottom: var(--spacing-md);
             border-top: 1px solid var(--color-border-secondary);
             padding-top: var(--spacing-md);
+            flex-wrap: wrap;
         }
 
         .post-stat {
@@ -586,13 +683,15 @@
             background: transparent;
             color: var(--color-text-secondary);
             cursor: pointer;
-            font-size: var(--font-size-sm);            transition: all 0.3s ease;
+            font-size: var(--font-size-sm);
+            transition: all 0.3s ease;
             border-radius: var(--radius-md);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: var(--spacing-xs);
             font-weight: 500;
+            min-height: 44px;
         }
 
         .post-action-btn:hover {
@@ -635,6 +734,7 @@
             box-shadow: var(--shadow-lg);
             transition: transform 0.3s ease;
         }
+
         .profile-avatar:hover {
             transform: scale(1.05);
         }
@@ -684,7 +784,8 @@
         }
 
         .stat-value {
-            font-size: var(--font-size-2xl);            font-weight: 700;
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
             color: var(--brand-accent);
             display: block;
         }
@@ -716,6 +817,7 @@
             justify-content: center;
             gap: var(--spacing-sm);
             font-size: var(--font-size-sm);
+            min-height: 44px;
         }
 
         .profile-btn-primary {
@@ -733,6 +835,7 @@
             color: var(--color-text-primary);
             border: 1px solid var(--color-border-secondary);
         }
+
         .profile-btn-secondary:hover {
             background: var(--color-bg-tertiary);
             border-color: var(--brand-accent);
@@ -782,7 +885,8 @@
             align-items: center;
             justify-content: center;
             gap: var(--spacing-lg);
-            opacity: 0;            transition: opacity 0.3s ease;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
         .post-grid-item:hover .post-grid-overlay {
@@ -832,6 +936,7 @@
             height: 100%;
             object-fit: cover;
         }
+
         .story-user-info {
             position: absolute;
             top: var(--spacing-lg);
@@ -881,6 +986,7 @@
             justify-content: center;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
         }
+
         .story-close:hover {
             background: rgba(220, 0, 0, 0.9);
             border-color: #ff3e3e;
@@ -930,6 +1036,7 @@
             z-index: 5;
             pointer-events: none;
         }
+
         .story-progress {
             position: absolute;
             top: 10px; left: 12px; right: 12px;
@@ -959,7 +1066,7 @@
             to { width: 100%; }
         }
 
-        /* ========== CREATE POST MODAL ========== */
+        /* ========== MODAL ========== */
         .modal {
             display: none;
             position: fixed;
@@ -978,6 +1085,7 @@
         .modal.active {
             display: flex;
         }
+
         .modal-content {
             background: var(--color-bg-card);
             border-radius: var(--radius-xl);
@@ -1011,6 +1119,11 @@
             padding: var(--spacing-sm);
             border-radius: var(--radius-md);
             transition: all 0.3s ease;
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .modal-close:hover {
@@ -1027,7 +1140,8 @@
         }
 
         .form-label {
-            display: block;            margin-bottom: var(--spacing-sm);
+            display: block;
+            margin-bottom: var(--spacing-sm);
             font-weight: 600;
             color: var(--color-text-primary);
             font-size: var(--font-size-sm);
@@ -1062,6 +1176,7 @@
             display: flex;
             gap: var(--spacing-md);
             justify-content: flex-end;
+            flex-wrap: wrap;
         }
 
         .btn {
@@ -1075,7 +1190,9 @@
             display: flex;
             align-items: center;
             gap: var(--spacing-sm);
+            min-height: 44px;
         }
+
         .btn-primary {
             background: var(--gradient-primary);
             color: white;
@@ -1097,7 +1214,141 @@
             border-color: var(--brand-accent);
         }
 
-        /* ========== MOBILE MECHANICS BUTTON ========== */
+        /* ========== FILE UPLOAD ========== */
+        .file-upload-area {
+            border: 2px dashed var(--color-border-secondary);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--color-bg-tertiary);
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--brand-accent);
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        .file-upload-area.has-file {
+            border-color: var(--brand-success);
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .file-upload-icon {
+            font-size: 2rem;
+            color: var(--brand-accent);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .file-upload-text {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .file-upload-hint {
+            color: var(--color-text-tertiary);
+            font-size: var(--font-size-xs);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: var(--radius-md);
+            margin-top: var(--spacing-md);
+            display: none;
+            object-fit: contain;
+        }
+
+        .image-preview.active {
+            display: block;
+        }
+
+        .file-info {
+            margin-top: var(--spacing-sm);
+            padding: var(--spacing-sm);
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary);
+            display: none;
+        }
+
+        .file-info.active {
+            display: block;
+        }
+
+        /* ========== CONFIRM DIALOG ========== */
+        .confirm-dialog {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-lg);
+            animation: fadeIn 0.2s ease;
+        }
+
+        .confirm-dialog.active {
+            display: flex;
+        }
+
+        .confirm-content {
+            background: var(--color-bg-card);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-xl);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.3s ease;
+        }
+
+        .confirm-icon {
+            font-size: 3rem;
+            color: var(--brand-danger);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .confirm-title {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .confirm-message {
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-lg);
+            font-size: var(--font-size-sm);
+        }
+
+        .confirm-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: center;
+        }
+
+        .btn-danger {
+            background: var(--brand-danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+            transform: translateY(-2px);
+        }
+
+        /* ========== FAB MECHANICS ========== */
         .fab-mechanics {
             display: none;
             position: fixed;
@@ -1118,14 +1369,15 @@
             align-items: center;
         }
 
-        .fab-mechanics:hover { 
-            transform: translateY(-2px); 
+        .fab-mechanics:hover {
+            transform: translateY(-2px);
             box-shadow: 0 6px 24px rgba(255,62,62,0.5);
         }
 
         /* ========== TOAST ========== */
         .toast {
-            position: fixed;            bottom: 20px;
+            position: fixed;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             background: var(--color-bg-card);
@@ -1138,9 +1390,10 @@
             max-width: 90%;
             font-size: var(--font-size-sm);
             box-shadow: var(--shadow-lg);
+            word-wrap: break-word;
         }
 
-        /* ========== LOADING OVERLAY ========== */
+        /* ========== LOADING ========== */
         #appLoader {
             position: fixed;
             inset: 0;
@@ -1174,7 +1427,8 @@
         .loader-spinner {
             width: 44px;
             height: 44px;
-            border: 4px solid var(--color-border-secondary);            border-top-color: var(--brand-primary);
+            border: 4px solid var(--color-border-secondary);
+            border-top-color: var(--brand-primary);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
@@ -1223,7 +1477,8 @@
 
             .nav-tab-btn {
                 padding: var(--spacing-xs) var(--spacing-md);
-                font-size: var(--font-size-xs);            }
+                font-size: var(--font-size-xs);
+            }
 
             .nav-tab-btn i {
                 display: none;
@@ -1273,6 +1528,7 @@
             .post-card {
                 border-radius: var(--radius-md);
             }
+
             .profile-container {
                 padding: var(--spacing-lg) var(--spacing-md);
             }
@@ -1312,6 +1568,19 @@
             .modal-body {
                 padding: var(--spacing-md);
             }
+
+            .confirm-content {
+                padding: var(--spacing-lg);
+            }
+
+            .confirm-actions {
+                flex-direction: column;
+            }
+
+            .confirm-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1322,6 +1591,7 @@
             .nav-tab-btn {
                 padding: var(--spacing-xs);
             }
+
             .create-post-text {
                 display: none;
             }
@@ -1370,9 +1640,23 @@
 
             .profile-btn {
                 width: 100%;
-            }        }
+            }
 
-        /* ========== ANIMATIONS ========== */
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .form-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .post-dropdown {
+                right: var(--spacing-sm);
+                min-width: 140px;
+            }
+        }
+
         @keyframes loadBar {
             0%   { transform: translateX(-100%); }
             50%  { transform: translateX(150%); }
@@ -1381,7 +1665,7 @@
     </style>
 </head>
 <body>
-    <!-- ========== LOADING OVERLAY ========== -->
+    <!-- ========== LOADING ========== -->
     <div id="appLoader">
         <div class="loader-logo">
             <i class="fas fa-car-side"></i>
@@ -1415,14 +1699,12 @@
 
     <!-- ========== MAIN CONTAINER ========== -->
     <div class="app-container">
-        <!-- HOME VIEW (Map) -->
+        <!-- HOME VIEW -->
         <div id="homeView" class="view active">
             <div id="map"></div>
             <div class="mechanics-panel">
-                <h3>                    <i class="fas fa-wrench"></i>
-                    Oficinas Próximas
-                </h3>
-                <button onclick="APP.locationRequested=false; APP.mechanicsSearching=false; requestLocation();" style="width:100%;margin-bottom:1rem;padding:0.75rem;background:var(--gradient-primary);border:none;border-radius:var(--radius-md);color:#fff;font-weight:600;cursor:pointer;font-size:var(--font-size-sm);transition:all 0.3s ease;">
+                <h3><i class="fas fa-wrench"></i> Oficinas Próximas</h3>
+                <button onclick="APP.locationRequested=false; APP.mechanicsSearching=false; requestLocation();" style="width:100%;margin-bottom:1rem;padding:0.75rem;background:var(--gradient-primary);border:none;border-radius:var(--radius-md);color:#fff;font-weight:600;cursor:pointer;font-size:var(--font-size-sm);transition:all 0.3s ease;min-height:44px;">
                     <i class="fas fa-crosshairs"></i> Atualizar Localização
                 </button>
                 <div id="mechanicsList"></div>
@@ -1431,7 +1713,6 @@
 
         <!-- SOCIAL VIEW -->
         <div id="socialView" class="view">
-            <!-- Stories -->
             <div class="stories-container" id="storiesContainer">
                 <div class="story add-story" onclick="openCreateStoryModal()">
                     <div class="story-avatar-wrapper">
@@ -1442,7 +1723,6 @@
                 </div>
             </div>
 
-            <!-- Create Post Button -->
             <div class="create-post-btn" onclick="openCreatePostModal()">
                 <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user" alt="Você" class="create-post-avatar">
                 <div class="create-post-text">No que você está trabalhando?</div>
@@ -1458,7 +1738,6 @@
                 </div>
             </div>
 
-            <!-- Feed -->
             <div class="feed" id="feed"></div>
         </div>
 
@@ -1468,7 +1747,8 @@
                 <div class="profile-header">
                     <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user" alt="Perfil" class="profile-avatar">
                     <h1 class="profile-name">João Silva</h1>
-                    <p class="profile-username">@joaosilva</p>                    <p class="profile-bio">
+                    <p class="profile-username">@joaosilva</p>
+                    <p class="profile-bio">
                         🏎️ Entusiasta automotivo<br>
                         🔧 Preparador de carros<br>
                         📍 São Paulo, SP
@@ -1509,16 +1789,17 @@
         </div>
     </div>
 
-    <!-- ========== MOBILE FAB MECHANICS ========== -->
+    <!-- ========== FAB MECHANICS ========== -->
     <button class="fab-mechanics" id="fabMechanics" onclick="openMobileMechanics()">
         <i class="fas fa-wrench"></i> Oficinas
     </button>
 
-    <!-- ========== MOBILE MECHANICS SHEET ========== -->
+    <!-- ========== MOBILE SHEET ========== -->
     <div id="mobileSheet" style="display:none;position:fixed;inset:0;z-index:350;background:rgba(0,0,0,0.7)" onclick="if(event.target===this)closeMobileSheet()">
         <div style="position:absolute;bottom:0;left:0;right:0;max-height:70vh;background:var(--color-bg-card);border-radius:24px 24px 0 0;padding:1.5rem;overflow-y:auto;">
-            <div style="width:40px;height:4px;background:var(--color-border-secondary);border-radius:2px;margin:0 auto 1.25rem;"></div>            <h3 style="color:var(--brand-accent);margin-bottom:1rem;"><i class="fas fa-wrench"></i> Oficinas Próximas</h3>
-            <button onclick="APP.locationRequested=false;APP.mechanicsSearching=false;requestLocation();closeMobileSheet();" style="width:100%;margin-bottom:1rem;padding:0.75rem;background:var(--gradient-primary);border:none;border-radius:var(--radius-md);color:#fff;font-weight:600;cursor:pointer;">
+            <div style="width:40px;height:4px;background:var(--color-border-secondary);border-radius:2px;margin:0 auto 1.25rem;"></div>
+            <h3 style="color:var(--brand-accent);margin-bottom:1rem;"><i class="fas fa-wrench"></i> Oficinas Próximas</h3>
+            <button onclick="APP.locationRequested=false;APP.mechanicsSearching=false;requestLocation();closeMobileSheet();" style="width:100%;margin-bottom:1rem;padding:0.75rem;background:var(--gradient-primary);border:none;border-radius:var(--radius-md);color:#fff;font-weight:600;cursor:pointer;min-height:44px;">
                 <i class="fas fa-crosshairs"></i> Atualizar Localização
             </button>
             <div id="mobileSheetList"></div>
@@ -1560,14 +1841,22 @@
                 <form id="createPostForm" onsubmit="createPost(event)">
                     <div class="form-group">
                         <label class="form-label">Título</label>
-                        <input type="text" class="form-input" id="postTitle" placeholder="Ex: Meu novo BMW M4" required>
+                        <input type="text" class="form-input" id="postTitle" placeholder="Ex: Meu novo Mustang GT" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Descrição</label>
                         <textarea class="form-textarea" id="postDescription" placeholder="Conte sobre seu veículo..." required></textarea>
                     </div>
-                    <div class="form-group">                        <label class="form-label">URL da Imagem (opcional)</label>
-                        <input type="url" class="form-input" id="postImage" placeholder="https://exemplo.com/imagem.jpg">
+                    <div class="form-group">
+                        <label class="form-label">Imagem</label>
+                        <div class="file-upload-area" id="postUploadArea" onclick="document.getElementById('postFileInput').click()">
+                            <div class="file-upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                            <div class="file-upload-text">Clique para escolher uma imagem</div>
+                            <div class="file-upload-hint">JPG, PNG ou GIF • Máximo 5MB</div>
+                        </div>
+                        <input type="file" class="file-input" id="postFileInput" accept="image/*" onchange="handlePostFileSelect(event)">
+                        <img class="image-preview" id="postImagePreview" alt="Preview">
+                        <div class="file-info" id="postFileInfo"></div>
                     </div>
                     <div class="form-actions">
                         <button type="button" class="btn btn-secondary" onclick="closeCreatePostModal()">Cancelar</button>
@@ -1593,8 +1882,15 @@
             <div class="modal-body">
                 <form id="createStoryForm" onsubmit="createStory(event)">
                     <div class="form-group">
-                        <label class="form-label">URL da Imagem</label>
-                        <input type="url" class="form-input" id="storyImage" placeholder="https://exemplo.com/story.jpg" required>
+                        <label class="form-label">Imagem do Story</label>
+                        <div class="file-upload-area" id="storyUploadArea" onclick="document.getElementById('storyFileInput').click()">
+                            <div class="file-upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                            <div class="file-upload-text">Clique para escolher uma imagem</div>
+                            <div class="file-upload-hint">JPG, PNG ou GIF • Máximo 5MB</div>
+                        </div>
+                        <input type="file" class="file-input" id="storyFileInput" accept="image/*" onchange="handleStoryFileSelect(event)">
+                        <img class="image-preview" id="storyImagePreview" alt="Preview">
+                        <div class="file-info" id="storyFileInfo"></div>
                     </div>
                     <div class="form-actions">
                         <button type="button" class="btn btn-secondary" onclick="closeCreateStoryModal()">Cancelar</button>
@@ -1608,6 +1904,19 @@
         </div>
     </div>
 
+    <!-- ========== CONFIRM DIALOG ========== -->
+    <div class="confirm-dialog" id="confirmDialog">
+        <div class="confirm-content">
+            <div class="confirm-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <h3 class="confirm-title" id="confirmTitle">Confirmar exclusão</h3>
+            <p class="confirm-message" id="confirmMessage">Tem certeza que deseja excluir este item?</p>
+            <div class="confirm-actions">
+                <button class="btn btn-secondary" onclick="closeConfirmDialog()">Cancelar</button>
+                <button class="btn btn-danger" id="confirmActionBtn">Excluir</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ========== SCRIPTS ========== -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
@@ -1615,19 +1924,23 @@
         const APP = {
             currentStoryIndex: 0,
             userLocation: { lat: -23.5505, lng: -46.6333 },
-            mapInitialized: false,            locationRequested: false,
+            mapInitialized: false,
+            locationRequested: false,
             mechanicsSearching: false,
-            storyTimer: null
+            storyTimer: null,
+            currentPostImage: null,
+            currentStoryImage: null,
+            openDropdownId: null
         };
 
-        // ========== LOCAL STORAGE KEYS ==========
         const STORAGE_KEYS = {
             POSTS: 'autoconnect_posts',
             STORIES: 'autoconnect_stories',
-            USER: 'autoconnect_user'
+            USER: 'autoconnect_user',
+            LAST_LOCATION: 'autoconnect_last_location'
         };
 
-        // ========== DEFAULT DATA ==========
+        // ========== DEFAULT DATA (Mustang ao invés de Civic) ==========
         const DEFAULT_POSTS = [
             {
                 id: 1,
@@ -1657,14 +1970,15 @@
                 id: 3,
                 user: "Bruno Prep",
                 avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=bruno",
-                image: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600",
-                title: "Civic 2024 renovado! 💯",
-                description: "Bumper novo, suspensão rebaixada e rodão de 19. Ficou de outro nível!",
+                image: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=600",
+                title: "Mustang GT 2024 renovado! 💯",
+                description: "Bumper novo, suspensão rebaixada e rodão de 20. V8 rugindo!",
                 likes: 3450,
                 comments: 567,
                 liked: false,
                 timestamp: Date.now() - 1800000
-            }        ];
+            }
+        ];
 
         const DEFAULT_STORIES = [
             {
@@ -1685,7 +1999,7 @@
                 id: 3,
                 user: "Bruno Prep",
                 avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=bruno",
-                image: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=500",
+                image: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=500",
                 time: "há 30 min"
             },
             {
@@ -1701,7 +2015,7 @@
         let POSTS = [];
         let MECHANICS = [];
 
-        // ========== LOCAL STORAGE FUNCTIONS ==========
+        // ========== LOCAL STORAGE ==========
         function loadFromStorage(key, defaultValue) {
             try {
                 const stored = localStorage.getItem(key);
@@ -1713,9 +2027,14 @@
         }
 
         function saveToStorage(key, value) {
-            try {                localStorage.setItem(key, JSON.stringify(value));
+            try {
+                localStorage.setItem(key, JSON.stringify(value));
             } catch (error) {
                 console.error('Erro ao salvar no localStorage:', error);
+                // Se localStorage estiver cheio (por causa de imagens Base64), avisa o usuário
+                if (error.name === 'QuotaExceededError') {
+                    showToast('⚠️ Armazenamento cheio! Exclua alguns posts com imagens.');
+                }
             }
         }
 
@@ -1723,9 +2042,14 @@
         document.addEventListener('DOMContentLoaded', () => {
             console.log('🚀 Inicializando AutoConnect...');
             
-            // Load data from localStorage or use defaults
             POSTS = loadFromStorage(STORAGE_KEYS.POSTS, DEFAULT_POSTS);
             STORIES = loadFromStorage(STORAGE_KEYS.STORIES, DEFAULT_STORIES);
+            
+            // Carrega última localização conhecida
+            const lastLocation = loadFromStorage(STORAGE_KEYS.LAST_LOCATION, null);
+            if (lastLocation) {
+                APP.userLocation = lastLocation;
+            }
             
             renderStories();
             renderFeed();
@@ -1734,12 +2058,18 @@
             initMap();
             
             setTimeout(() => {
-                console.log('📍 Solicitando localização...');
                 const loader = document.getElementById('appLoader');
                 loader.classList.add('hidden');
                 setTimeout(() => loader.remove(), 600);
                 requestLocation();
             }, 800);
+            
+            // Fecha dropdown ao clicar fora
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.post-menu-btn') && !e.target.closest('.post-dropdown')) {
+                    closeAllDropdowns();
+                }
+            });
         });
 
         // ========== VIEWS ==========
@@ -1756,22 +2086,31 @@
             if (viewName === 'home' && APP.map) {
                 setTimeout(() => APP.map.invalidateSize(), 300);
             }
+            
+            closeAllDropdowns();
         }
 
         // ========== STORIES ==========
         function renderStories() {
             const container = document.getElementById('storiesContainer');
-            const addStoryBtn = container.querySelector('.add-story');
-                        // Clear existing stories (keep add button)
             const existingStories = container.querySelectorAll('.story:not(.add-story)');
             existingStories.forEach(s => s.remove());
             
             STORIES.forEach((story, idx) => {
                 const storyEl = document.createElement('div');
                 storyEl.className = 'story';
+                
+                const isUserStory = story.user === "Você";
+                const deleteBtn = isUserStory ? `
+                    <button class="story-delete-btn" onclick="event.stopPropagation(); confirmDeleteStory(${idx})" title="Excluir story">
+                        <i class="fas fa-times"></i>
+                    </button>
+                ` : '';
+                
                 storyEl.innerHTML = `
                     <div class="story-avatar-wrapper">
                         <img src="${story.avatar}" alt="${story.user}" class="story-avatar" onclick="viewStory(${idx})" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=default'">
+                        ${deleteBtn}
                     </div>
                     <span class="story-name">${story.user.split(' ')[0]}</span>
                 `;
@@ -1811,7 +2150,8 @@
             APP.storyTimer = setTimeout(() => {
                 if (index < STORIES.length - 1) nextStory();
                 else closeStory();
-            }, 5000);            
+            }, 5000);
+            
             document.removeEventListener('keydown', handleStoryKeydown);
             document.addEventListener('keydown', handleStoryKeydown);
         }
@@ -1830,9 +2170,7 @@
         }
 
         function handleStoryKeydown(e) {
-            if (e.key === 'Escape') {
-                closeStory();
-            }
+            if (e.key === 'Escape') closeStory();
         }
 
         function nextStory() {
@@ -1847,22 +2185,128 @@
 
         function openCreateStoryModal() {
             document.getElementById('createStoryModal').classList.add('active');
+            resetStoryUpload();
         }
 
         function closeCreateStoryModal() {
             document.getElementById('createStoryModal').classList.remove('active');
             document.getElementById('createStoryForm').reset();
+            resetStoryUpload();
         }
 
+        // ========== FILE UPLOAD HANDLERS ==========
+        function handlePostFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            processImageFile(file, 'post');
+        }
+
+        function handleStoryFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            processImageFile(file, 'story');
+        }
+
+        function processImageFile(file, type) {
+            // Validação de tamanho (5MB)
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            if (file.size > maxSize) {
+                showToast('⚠️ Imagem muito grande! Máximo 5MB.');
+                return;
+            }
+            
+            // Validação de tipo
+            if (!file.type.startsWith('image/')) {
+                showToast('⚠️ Selecione apenas imagens!');
+                return;
+            }
+            
+            showToast('📸 Processando imagem...');
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64 = e.target.result;
+                
+                if (type === 'post') {
+                    APP.currentPostImage = base64;
+                    const preview = document.getElementById('postImagePreview');
+                    const fileInfo = document.getElementById('postFileInfo');
+                    const uploadArea = document.getElementById('postUploadArea');
+                    
+                    preview.src = base64;
+                    preview.classList.add('active');
+                    uploadArea.classList.add('has-file');
+                    
+                    fileInfo.innerHTML = `
+                        <i class="fas fa-check-circle" style="color: var(--brand-success);"></i>
+                        ${file.name} • ${formatFileSize(file.size)}
+                    `;
+                    fileInfo.classList.add('active');
+                } else {
+                    APP.currentStoryImage = base64;
+                    const preview = document.getElementById('storyImagePreview');
+                    const fileInfo = document.getElementById('storyFileInfo');
+                    const uploadArea = document.getElementById('storyUploadArea');
+                    
+                    preview.src = base64;
+                    preview.classList.add('active');
+                    uploadArea.classList.add('has-file');
+                    
+                    fileInfo.innerHTML = `
+                        <i class="fas fa-check-circle" style="color: var(--brand-success);"></i>
+                        ${file.name} • ${formatFileSize(file.size)}
+                    `;
+                    fileInfo.classList.add('active');
+                }
+                
+                showToast('✅ Imagem carregada!');
+            };
+            
+            reader.onerror = function() {
+                showToast('❌ Erro ao carregar imagem');
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        function resetPostUpload() {
+            APP.currentPostImage = null;
+            document.getElementById('postImagePreview').classList.remove('active');
+            document.getElementById('postFileInfo').classList.remove('active');
+            document.getElementById('postUploadArea').classList.remove('has-file');
+            document.getElementById('postFileInput').value = '';
+        }
+
+        function resetStoryUpload() {
+            APP.currentStoryImage = null;
+            document.getElementById('storyImagePreview').classList.remove('active');
+            document.getElementById('storyFileInfo').classList.remove('active');
+            document.getElementById('storyUploadArea').classList.remove('has-file');
+            document.getElementById('storyFileInput').value = '';
+        }
+
+        // ========== CREATE STORY ==========
         function createStory(event) {
             event.preventDefault();
             
-            const imageUrl = document.getElementById('storyImage').value;
+            if (!APP.currentStoryImage) {
+                showToast('⚠️ Selecione uma imagem!');
+                return;
+            }
             
             const newStory = {
-                id: Date.now(),                user: "Você",
+                id: Date.now(),
+                user: "Você",
                 avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=user",
-                image: imageUrl || 'https://via.placeholder.com/500x600/1a1a1a/ff3e3e?text=Seu+Story',
+                image: APP.currentStoryImage,
                 time: "agora"
             };
             
@@ -1879,17 +2323,27 @@
             
             feed.innerHTML = POSTS.map((post) => {
                 const timeAgo = getTimeAgo(post.timestamp);
+                const isUserPost = post.user === "Você";
+                
+                const menuBtn = isUserPost ? `
+                    <button class="post-menu-btn" onclick="event.stopPropagation(); togglePostMenu(${post.id}, this)">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                ` : `
+                    <button class="post-menu-btn">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                `;
+                
                 return `
-                    <div class="post-card">
+                    <div class="post-card" data-post-id="${post.id}">
                         <div class="post-header">
                             <img src="${post.avatar}" alt="${post.user}" class="post-avatar" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=default'">
                             <div class="post-user-info">
                                 <div class="post-user-name">${post.user}</div>
                                 <div class="post-user-handle">${timeAgo}</div>
                             </div>
-                            <button class="post-menu-btn">
-                                <i class="fas fa-ellipsis-h"></i>
-                            </button>
+                            ${menuBtn}
                         </div>
                         <img src="${post.image}" alt="${post.title}" class="post-image" onerror="this.style.background='#1a1a1a';this.style.minHeight='200px'">
                         <div class="post-content">
@@ -1909,7 +2363,8 @@
                                 <i class="fas fa-comment"></i>
                                 <span>Comentar</span>
                             </button>
-                            <button class="post-action-btn" onclick="sharePost()">                                <i class="fas fa-share"></i>
+                            <button class="post-action-btn" onclick="sharePost()">
+                                <i class="fas fa-share"></i>
                                 <span>Compartilhar</span>
                             </button>
                         </div>
@@ -1918,6 +2373,96 @@
             }).join('');
         }
 
+        // ========== POST DROPDOWN MENU ==========
+        function togglePostMenu(postId, btn) {
+            event.stopPropagation();
+            
+            // Fecha outros dropdowns abertos
+            closeAllDropdowns();
+            
+            // Cria dropdown se não existir
+            const postCard = btn.closest('.post-card');
+            let dropdown = postCard.querySelector('.post-dropdown');
+            
+            if (!dropdown) {
+                dropdown = document.createElement('div');
+                dropdown.className = 'post-dropdown';
+                dropdown.innerHTML = `
+                    <button class="post-dropdown-item danger" onclick="event.stopPropagation(); confirmDeletePost(${postId})">
+                        <i class="fas fa-trash"></i>
+                        <span>Excluir Post</span>
+                    </button>
+                `;
+                postCard.querySelector('.post-header').appendChild(dropdown);
+            }
+            
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            APP.openDropdownId = postId;
+        }
+
+        function closeAllDropdowns() {
+            document.querySelectorAll('.post-dropdown').forEach(d => {
+                d.style.display = 'none';
+            });
+            APP.openDropdownId = null;
+        }
+
+        // ========== CONFIRM DIALOG ==========
+        function showConfirmDialog(title, message, onConfirm) {
+            document.getElementById('confirmTitle').textContent = title;
+            document.getElementById('confirmMessage').textContent = message;
+            document.getElementById('confirmDialog').classList.add('active');
+            
+            const btn = document.getElementById('confirmActionBtn');
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
+            
+            newBtn.addEventListener('click', () => {
+                onConfirm();
+                closeConfirmDialog();
+            });
+        }
+
+        function closeConfirmDialog() {
+            document.getElementById('confirmDialog').classList.remove('active');
+        }
+
+        // ========== DELETE POST ==========
+        function confirmDeletePost(postId) {
+            closeAllDropdowns();
+            showConfirmDialog(
+                'Excluir Post',
+                'Tem certeza que deseja excluir este post? Esta ação não pode ser desfeita.',
+                () => deletePost(postId)
+            );
+        }
+
+        function deletePost(postId) {
+            POSTS = POSTS.filter(p => p.id !== postId);
+            saveToStorage(STORAGE_KEYS.POSTS, POSTS);
+            renderFeed();
+            renderProfileGallery();
+            updateProfileStats();
+            showToast('🗑️ Post excluído com sucesso!');
+        }
+
+        // ========== DELETE STORY ==========
+        function confirmDeleteStory(storyIndex) {
+            showConfirmDialog(
+                'Excluir Story',
+                'Tem certeza que deseja excluir este story?',
+                () => deleteStory(storyIndex)
+            );
+        }
+
+        function deleteStory(storyIndex) {
+            STORIES.splice(storyIndex, 1);
+            saveToStorage(STORAGE_KEYS.STORIES, STORIES);
+            renderStories();
+            showToast('🗑️ Story excluído com sucesso!');
+        }
+
+        // ========== TIME ==========
         function getTimeAgo(timestamp) {
             const seconds = Math.floor((Date.now() - timestamp) / 1000);
             
@@ -1927,6 +2472,7 @@
             return `há ${Math.floor(seconds / 86400)} dias`;
         }
 
+        // ========== LIKE ==========
         function toggleLike(postId, btn) {
             const post = POSTS.find(p => p.id === postId);
             if (!post) return;
@@ -1954,24 +2500,31 @@
 
         function openCreatePostModal() {
             document.getElementById('createPostModal').classList.add('active');
+            resetPostUpload();
         }
 
         function closeCreatePostModal() {
             document.getElementById('createPostModal').classList.remove('active');
-            document.getElementById('createPostForm').reset();        }
+            document.getElementById('createPostForm').reset();
+            resetPostUpload();
+        }
 
         function createPost(event) {
             event.preventDefault();
             
+            if (!APP.currentPostImage) {
+                showToast('⚠️ Selecione uma imagem!');
+                return;
+            }
+            
             const title = document.getElementById('postTitle').value;
             const description = document.getElementById('postDescription').value;
-            const imageUrl = document.getElementById('postImage').value;
             
             const newPost = {
                 id: Date.now(),
                 user: "Você",
                 avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=user",
-                image: imageUrl || 'https://via.placeholder.com/600x600/1a1a1a/ff3e3e?text=Seu+Post',
+                image: APP.currentPostImage,
                 title: title,
                 description: description,
                 likes: 0,
@@ -2007,7 +2560,8 @@
                 <div class="post-grid-item">
                     <img src="${post.image}" alt="Post ${i+1}" onerror="this.src='https://via.placeholder.com/300x300?text=Post'">
                     <div class="post-grid-overlay">
-                        <div class="post-grid-stat">                            <i class="fas fa-heart"></i> ${post.likes}
+                        <div class="post-grid-stat">
+                            <i class="fas fa-heart"></i> ${post.likes}
                         </div>
                         <div class="post-grid-stat">
                             <i class="fas fa-comment"></i> ${post.comments}
@@ -2035,10 +2589,7 @@
         // ========== MAP ==========
         function initMap() {
             console.log('🗺️ Inicializando mapa...');
-            if (APP.map) {
-                console.log('⚠️ Mapa já inicializado');
-                return;
-            }
+            if (APP.map) return;
             
             APP.map = L.map('map').setView([APP.userLocation.lat, APP.userLocation.lng], 13);
             
@@ -2056,10 +2607,11 @@
                 opacity: 1,
                 fillOpacity: 0.8
             }).addTo(APP.map).bindPopup('📍 Você está aqui');
-                        APP.mapInitialized = true;
-            console.log('✅ Mapa inicializado');
+            
+            APP.mapInitialized = true;
         }
 
+        // ========== LOCATION (MELHORADA) ==========
         function requestLocation() {
             if (APP.locationRequested) {
                 console.log('⏳ Localização já foi solicitada');
@@ -2068,82 +2620,113 @@
             
             APP.locationRequested = true;
             
-            if (navigator.geolocation) {
-                showToast('📍 Detectando sua localização...');
-                navigator.geolocation.getCurrentPosition(
-                    pos => {
-                        const newLat = pos.coords.latitude;
-                        const newLng = pos.coords.longitude;
-                        console.log('✅ GPS funcionando! Lat:', newLat, 'Lng:', newLng);
-                        
-                        APP.userLocation = { lat: newLat, lng: newLng };
-                                                if (APP.map) {
-                            const userMarkers = [];
-                            APP.map.eachLayer(layer => {
-                                if (layer instanceof L.CircleMarker) {
-                                    userMarkers.push(layer);
-                                }
-                            });
-                            userMarkers.forEach(m => APP.map.removeLayer(m));
-                            
-                            APP.map.setView([newLat, newLng], 15);
-                            
-                            L.circleMarker([newLat, newLng], {
-                                radius: 10,
-                                fillColor: '#00d4ff',
-                                color: '#fff',
-                                weight: 3,
-                                opacity: 1,
-                                fillOpacity: 0.8
-                            }).addTo(APP.map).bindPopup('📍 Você está aqui');
-                        }
-                        
-                        showToast('✅ Localização obtida com sucesso!');
-                        
-                        setTimeout(() => {
-                            console.log('🔍 Buscando oficinas para:', newLat, newLng);
-                            fetchRealMechanics(newLat, newLng);
-                        }, 500);
-                    },
-                    error => {
-                        console.warn('❌ Erro no GPS:', error.code, error.message);
-                        
-                        if (error.code === 1) {
-                            showToast('⚠️ Permissão negada. Usando São Paulo como padrão...');
-                        } else if (error.code === 2) {
-                            showToast('⚠️ Posição indisponível. Usando São Paulo como padrão...');
-                        } else {
-                            showToast('⚠️ Erro no GPS. Usando São Paulo como padrão...');
-                        }
-                        
-                        const defaultLat = -23.5505;
-                        const defaultLng = -46.6333;
-                        APP.userLocation = { lat: defaultLat, lng: defaultLng };
-                        
-                        if (APP.map) {
-                            APP.map.setView([defaultLat, defaultLng], 13);
-                        }
-                        
-                        console.log('🔍 Buscando oficinas para SP padrão');
-                        fetchRealMechanics(defaultLat, defaultLng);
-                    },                    { 
-                        enableHighAccuracy: true,
-                        timeout: 10000,
-                        maximumAge: 0
-                    }
-                );
-            } else {
+            if (!navigator.geolocation) {
                 console.warn('❌ Geolocalização não suportada');
-                showToast('⚠️ Seu navegador não suporta geolocalização');
+                useFallbackLocation('Seu navegador não suporta geolocalização');
+                return;
+            }
+            
+            showToast('📡 Buscando satélites GPS...');
+            
+            // Tentativa 1: GPS de alta precisão
+            navigator.geolocation.getCurrentPosition(
+                pos => handleLocationSuccess(pos, 'alta precisão'),
+                error => {
+                    console.warn('⚠️ GPS alta precisão falhou:', error.message);
+                    
+                    // Tentativa 2: GPS de baixa precisão
+                    showToast('📡 Tentando localização aproximada...');
+                    navigator.geolocation.getCurrentPosition(
+                        pos => handleLocationSuccess(pos, 'localização aproximada'),
+                        error2 => {
+                            console.warn('⚠️ GPS baixa precisão falhou:', error2.message);
+                            useFallbackLocation('GPS indisponível');
+                        },
+                        {
+                            enableHighAccuracy: false,
+                            timeout: 8000,
+                            maximumAge: 300000 // 5 minutos
+                        }
+                    );
+                },
+                { 
+                    enableHighAccuracy: true,
+                    timeout: 15000,
+                    maximumAge: 0
+                }
+            );
+        }
+
+        function handleLocationSuccess(pos, precision) {
+            const newLat = pos.coords.latitude;
+            const newLng = pos.coords.longitude;
+            const accuracy = pos.coords.accuracy;
+            
+            console.log(`✅ GPS funcionando (${precision})! Lat:`, newLat, 'Lng:', newLng);
+            
+            APP.userLocation = { lat: newLat, lng: newLng };
+            
+            // Salva última localização
+            saveToStorage(STORAGE_KEYS.LAST_LOCATION, APP.userLocation);
+            
+            if (APP.map) {
+                // Remove markers antigos do usuário
+                APP.map.eachLayer(layer => {
+                    if (layer instanceof L.CircleMarker) {
+                        APP.map.removeLayer(layer);
+                    }
+                });
+                
+                APP.map.setView([newLat, newLng], 15);
+                
+                L.circleMarker([newLat, newLng], {
+                    radius: 10,
+                    fillColor: '#00d4ff',
+                    color: '#fff',
+                    weight: 3,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                }).addTo(APP.map).bindPopup('📍 Você está aqui');
+            }
+            
+            const accuracyText = accuracy ? ` (±${Math.round(accuracy)}m)` : '';
+            showToast(`✅ Localização obtida${accuracyText}!`);
+            
+            setTimeout(() => {
+                fetchRealMechanics(newLat, newLng);
+            }, 500);
+        }
+
+        function useFallbackLocation(reason) {
+            // Tenta usar última localização conhecida
+            const lastLocation = loadFromStorage(STORAGE_KEYS.LAST_LOCATION, null);
+            
+            if (lastLocation) {
+                APP.userLocation = lastLocation;
+                showToast(`⚠️ ${reason}. Usando última localização conhecida...`);
+                
+                if (APP.map) {
+                    APP.map.setView([lastLocation.lat, lastLocation.lng], 13);
+                }
+                
+                fetchRealMechanics(lastLocation.lat, lastLocation.lng);
+            } else {
+                // Último recurso: São Paulo
                 const defaultLat = -23.5505;
                 const defaultLng = -46.6333;
                 APP.userLocation = { lat: defaultLat, lng: defaultLng };
+                
+                showToast(`⚠️ ${reason}. Usando São Paulo como padrão...`);
+                
+                if (APP.map) {
+                    APP.map.setView([defaultLat, defaultLng], 13);
+                }
+                
                 fetchRealMechanics(defaultLat, defaultLng);
             }
         }
 
-        // ========== BUSCA DE OFICINAS (VERSÃO MELHORADA) ==========
-
+        // ========== BUSCA DE OFICINAS ==========
         function calculateDistance(lat1, lon1, lat2, lon2) {
             const R = 6371;
             const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -2205,10 +2788,7 @@
 
         async function fetchRealMechanics(lat, lng) {
             try {
-                if (APP.mechanicsSearching) {
-                    console.log('⏳ Busca de mecânicas já em andamento...');
-                    return;
-                }
+                if (APP.mechanicsSearching) return;
                 
                 APP.mechanicsSearching = true;
                 setMechanicsLoading(true);
@@ -2238,125 +2818,104 @@
         }
 
         async function fetchOverpassMechanics(lat, lng) {
-    try {
-        console.log('🔍 Overpass: busca precisa (raio ~10km)');
-        
-        // ✅ CORREÇÃO 1: Query usa "out center" para funcionar com ways
-        const query = `
-            [out:json][timeout:25][bbox:${lat-0.08},${lng-0.08},${lat+0.08},${lng+0.08}];
-            (
-                node["shop"="car_repair"];
-                node["shop"="car_parts"];
-                node["shop"="car"];
-                node["shop"="tyres"];
-                node["amenity"="car_repair"];
-                node["amenity"="car_wash"];
-                node["amenity"="fuel"];
-                node["amenity"="car_rental"];
-                node["craft"="car_repair"];
-                way["shop"="car_repair"];
-                way["shop"="car_parts"];
-                way["shop"="car"];
-                way["amenity"="car_repair"];
-                way["amenity"="car_wash"];
-                way["craft"="car_repair"];
-            );
-            out center;
-        `;
-        
-        const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
-        
-        let response;
-        try {
-            response = await Promise.race([
-                fetch(url),
-                new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error('Timeout')), 20000)
-                )
-            ]);
-        } catch (timeoutError) {
-            console.warn('⏱️ Overpass timeout');
-            return false;
-        }
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log('📦 Overpass retornou:', data.elements?.length || 0, 'elementos');
-        
-        if (!data.elements || data.elements.length === 0) {
-            return false;
-        }
-        
-        MECHANICS = [];
-        
-        // ✅ CORREÇÃO 2: Aceita nodes E ways
-        data.elements.forEach(element => {
-            if (!element.tags) return;
-            
-            let elemLat, elemLon;
-            
-            // Node tem lat/lon direto
-            if (element.type === 'node') {
-                elemLat = element.lat;
-                elemLon = element.lon;
-            } 
-            // Way tem center.lat/center.lon
-            else if (element.type === 'way' && element.center) {
-                elemLat = element.center.lat;
-                elemLon = element.center.lon;
+            try {
+                const query = `
+                    [out:json][timeout:25][bbox:${lat-0.08},${lng-0.08},${lat+0.08},${lng+0.08}];
+                    (
+                        node["shop"="car_repair"];
+                        node["shop"="car_parts"];
+                        node["shop"="car"];
+                        node["shop"="tyres"];
+                        node["amenity"="car_repair"];
+                        node["amenity"="car_wash"];
+                        node["amenity"="fuel"];
+                        node["amenity"="car_rental"];
+                        node["craft"="car_repair"];
+                        way["shop"="car_repair"];
+                        way["shop"="car_parts"];
+                        way["shop"="car"];
+                        way["amenity"="car_repair"];
+                        way["amenity"="car_wash"];
+                        way["craft"="car_repair"];
+                    );
+                    out center;
+                `;
+                
+                const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
+                
+                let response;
+                try {
+                    response = await Promise.race([
+                        fetch(url),
+                        new Promise((_, reject) => 
+                            setTimeout(() => reject(new Error('Timeout')), 20000)
+                        )
+                    ]);
+                } catch (timeoutError) {
+                    return false;
+                }
+                
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
+                const data = await response.json();
+                
+                if (!data.elements || data.elements.length === 0) return false;
+                
+                MECHANICS = [];
+                
+                data.elements.forEach(element => {
+                    if (!element.tags) return;
+                    
+                    let elemLat, elemLon;
+                    
+                    if (element.type === 'node') {
+                        elemLat = element.lat;
+                        elemLon = element.lon;
+                    } else if (element.type === 'way' && element.center) {
+                        elemLat = element.center.lat;
+                        elemLon = element.center.lon;
+                    }
+                    
+                    if (!elemLat || !elemLon) return;
+                    
+                    const distance = calculateDistance(lat, lng, elemLat, elemLon);
+                    if (distance > 15) return;
+                    
+                    const tags = element.tags;
+                    
+                    MECHANICS.push({
+                        name: tags.name || tags.brand || "Oficina/Garagem",
+                        lat: elemLat,
+                        lon: elemLon,
+                        distance: distance.toFixed(1),
+                        phone: formatPhone(tags.phone || tags['contact:phone']),
+                        website: tags.website || tags['contact:website'] || null,
+                        address: formatAddress(tags),
+                        openingHours: formatOpeningHours(tags.opening_hours),
+                        type: getServiceType(tags),
+                        rating: tags.stars || null
+                    });
+                });
+                
+                MECHANICS.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+                MECHANICS = MECHANICS.slice(0, 20);
+                
+                if (MECHANICS.length > 0) {
+                    renderMechanics();
+                    addMechanicsMarkers();
+                    showToast(`✅ ${MECHANICS.length} estabelecimentos encontrados!`);
+                    return true;
+                }
+                
+                return false;
+            } catch (error) {
+                console.error('❌ Erro Overpass:', error);
+                return false;
             }
-            
-            if (!elemLat || !elemLon) return;
-            
-            const distance = calculateDistance(lat, lng, elemLat, elemLon);
-            
-            if (distance > 15) return;
-            
-            const tags = element.tags;
-            const address = formatAddress(tags);
-            const phone = formatPhone(tags.phone || tags['contact:phone']);
-            const website = tags.website || tags['contact:website'] || null;
-            const openingHours = formatOpeningHours(tags.opening_hours);
-            const serviceType = getServiceType(tags);
-            
-            MECHANICS.push({
-                name: tags.name || tags.brand || "Oficina/Garagem",
-                lat: elemLat,
-                lon: elemLon,
-                distance: distance.toFixed(1),
-                phone: phone,
-                website: website,
-                address: address,
-                openingHours: openingHours,
-                type: serviceType,
-                rating: tags.stars || null
-            });
-        });
-        
-        MECHANICS.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
-        MECHANICS = MECHANICS.slice(0, 20);
-        
-        if (MECHANICS.length > 0) {
-            console.log('✅ Overpass encontrou', MECHANICS.length, 'estabelecimentos');
-            renderMechanics();
-            addMechanicsMarkers();
-            showToast(`✅ ${MECHANICS.length} estabelecimentos encontrados!`);
-            return true;
         }
-        
-        return false;
-    } catch (error) {
-        console.error('❌ Erro Overpass:', error);
-        return false;
-    }
-}
+
         async function fetchOverpassMechanicsWide(lat, lng) {
             try {
-                console.log('🔍 Overpass: busca ampla (raio ~25km)');
-                
                 const query = `
                     [out:json][timeout:20][bbox:${lat-0.2},${lng-0.2},${lat+0.2},${lng+0.2}];
                     (
@@ -2380,14 +2939,12 @@
                         )
                     ]);
                 } catch (timeoutError) {
-                    console.warn('⏱️ Overpass wide timeout');
                     return false;
                 }
                 
                 if (!response.ok) return false;
                 
                 const data = await response.json();
-                
                 if (!data.elements || data.elements.length === 0) return false;
                 
                 MECHANICS = [];
@@ -2428,7 +2985,6 @@
                 MECHANICS = MECHANICS.slice(0, 20);
                 
                 if (MECHANICS.length > 0) {
-                    console.log('✅ Overpass wide encontrou', MECHANICS.length);
                     renderMechanics();
                     addMechanicsMarkers();
                     showToast(`✅ ${MECHANICS.length} estabelecimentos encontrados!`);
@@ -2444,8 +3000,6 @@
 
         async function fetchNominatimMechanics(lat, lng) {
             try {
-                console.log('🔍 Tentando Nominatim...');
-                
                 const bbox = `${lng-0.15},${lat-0.15},${lng+0.15},${lat+0.15}`;
                 const url = `https://nominatim.openstreetmap.org/search?q=mecanica+automotiva&format=json&bounded=1&viewbox=${bbox}&limit=20&accept-language=pt-BR`;
                 
@@ -2463,7 +3017,6 @@
                         )
                     ]);
                 } catch (timeoutError) {
-                    console.warn('⏱️ Nominatim timeout');
                     showToast('⚠️ Serviço de busca indisponível no momento');
                     MECHANICS = [];
                     renderMechanics();
@@ -2489,7 +3042,6 @@
                     .slice(0, 15);
                     
                     if (MECHANICS.length > 0) {
-                        console.log('✅ Nominatim encontrou', MECHANICS.length);
                         renderMechanics();
                         addMechanicsMarkers();
                         showToast(`✅ ${MECHANICS.length} estabelecimentos encontrados!`);
@@ -2512,45 +3064,41 @@
         }
 
         function addMechanicsMarkers() {
-    if (!APP.map) return;
-    
-    // ✅ CORREÇÃO: Remove APENAS markers de oficinas (não o do usuário)
-    APP.map.eachLayer(layer => {
-        if (layer instanceof L.Marker && layer._isMechanicMarker) {
-            APP.map.removeLayer(layer);
+            if (!APP.map) return;
+            
+            APP.map.eachLayer(layer => {
+                if (layer instanceof L.Marker && layer._isMechanicMarker) {
+                    APP.map.removeLayer(layer);
+                }
+            });
+            
+            MECHANICS.forEach(m => {
+                const popupContent = `
+                    <div style="min-width:200px;">
+                        <strong style="font-size:14px;">🔧 ${m.name}</strong><br>
+                        <span style="color:#00d4ff;font-weight:600;">📍 ${m.distance}km de você</span><br>
+                        <span style="color:#666;font-size:12px;">${m.type}</span>
+                        ${m.address ? `<br><span style="font-size:12px;">📋 ${m.address}</span>` : ''}
+                        ${m.phone !== "não informado" ? `<br><a href="tel:${m.phone.replace(/\D/g,'')}" style="color:#00d4ff;text-decoration:none;">📱 ${m.phone}</a>` : ''}
+                        ${m.website ? `<br><a href="${m.website}" target="_blank" style="color:#00d4ff;font-size:12px;">🌐 Site</a>` : ''}
+                        ${m.openingHours ? `<br><span style="font-size:11px;color:#666;">🕐 ${m.openingHours}</span>` : ''}
+                    </div>
+                `;
+                
+                const marker = L.marker([m.lat, m.lon], {
+                    icon: L.icon({
+                        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41],
+                        popupAnchor: [1, -34],
+                        shadowSize: [41, 41]
+                    })
+                }).addTo(APP.map).bindPopup(popupContent);
+                
+                marker._isMechanicMarker = true;
+            });
         }
-    });
-    
-    console.log('📍 Adicionando', MECHANICS.length, 'marcadores no mapa');
-    
-    MECHANICS.forEach(m => {
-        const popupContent = `
-            <div style="min-width:200px;">
-                <strong style="font-size:14px;">🔧 ${m.name}</strong><br>
-                <span style="color:#00d4ff;font-weight:600;">📍 ${m.distance}km de você</span><br>
-                <span style="color:#666;font-size:12px;">${m.type}</span>
-                ${m.address ? `<br><span style="font-size:12px;">📋 ${m.address}</span>` : ''}
-                ${m.phone !== "não informado" ? `<br><a href="tel:${m.phone.replace(/\D/g,'')}" style="color:#00d4ff;text-decoration:none;">📱 ${m.phone}</a>` : ''}
-                ${m.website ? `<br><a href="${m.website}" target="_blank" style="color:#00d4ff;font-size:12px;">🌐 Site</a>` : ''}
-                ${m.openingHours ? `<br><span style="font-size:11px;color:#666;">🕐 ${m.openingHours}</span>` : ''}
-            </div>
-        `;
-        
-        // ✅ Marca como marker de oficina
-        const marker = L.marker([m.lat, m.lon], {
-            icon: L.icon({
-                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
-                shadowSize: [41, 41]
-            })
-        }).addTo(APP.map).bindPopup(popupContent);
-        
-        marker._isMechanicMarker = true;
-    });
-}
 
         function setMechanicsLoading(loading) {
             const list = document.getElementById('mechanicsList');
@@ -2597,13 +3145,12 @@
             `).join('');
         }
 
-                function focusMechanic(index) {
+        function focusMechanic(index) {
             const m = MECHANICS[index];
             if (APP.map && m.lat && m.lon) {
                 APP.map.setView([m.lat, m.lon], 16);
                 showToast(`📍 ${m.name}`);
                 
-                // ✅ Abre o popup do marcador correspondente
                 APP.map.eachLayer(layer => {
                     if (layer instanceof L.Marker && layer._isMechanicMarker) {
                         const latlng = layer.getLatLng();
@@ -2636,35 +3183,23 @@
             toast.className = 'toast';
             toast.textContent = message;
             document.body.appendChild(toast);
-            console.log('Toast:', message);
             setTimeout(() => toast.remove(), 3000);
         }
 
-        // Debug functions
-        function logDebugInfo() {
+        // Debug
+        window.debugAutoConnect = () => {
             console.group('🔍 DEBUG INFO AutoConnect');
             console.log('Localização atual:', APP.userLocation);
             console.log('Mecânicas encontradas:', MECHANICS.length);
-            console.table(MECHANICS);
-            console.log('Mapa inicializado:', APP.map ? 'Sim' : 'Não');
             console.log('Posts salvos:', POSTS.length);
             console.log('Stories salvos:', STORIES.length);
             console.groupEnd();
-        }
-
-        window.debugAutoConnect = logDebugInfo;
-        window.testGPS = () => requestLocation();
-        window.testSearch = () => fetchRealMechanics(APP.userLocation.lat, APP.userLocation.lng);
+        };
+        
         window.clearAllData = () => {
             localStorage.clear();
             location.reload();
         };
-        
-        console.log('💡 Para debug, use no console:');
-        console.log('  debugAutoConnect() - Ver informações de debug');
-        console.log('  testGPS() - Testar localização');
-        console.log('  testSearch() - Testar busca de oficinas');
-        console.log('  clearAllData() - Limpar todos os dados salvos');
     </script>
 </body>
 </html>
